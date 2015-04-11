@@ -18,5 +18,12 @@ app.get('/', function(req, res){
   res.render('index');
 });
 
+// API for getting possibilities:
+//    + lat
+//    + long
+//    + limit
+//    + category
+// TODO
+
 app.listen(port);
 console.log('App running on port', port);
