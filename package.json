@@ -1,7 +1,7 @@
 {
   "name": "Decision",
   "version": "1.0.0",
-  "description": "",
+  "description": "Decision App",
   "main": "app.js",
   "directories": {
     "test": "test"
