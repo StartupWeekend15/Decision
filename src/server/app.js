@@ -11,8 +11,11 @@ app.set('view engine', "jade");
 app.engine('jade', require('jade').__express);
 app.use(bodyParser.urlencoded({extended: true}));
 
+// styles
+app.use(express.static(__dirname + '/../client/css'));
+
 app.get('/', function(req, res){
-    res.render('index');
+  res.render('index');
 });
 
 app.listen(port);
