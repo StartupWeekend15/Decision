@@ -1,22 +1,26 @@
 /*globals describe,it*/
-'use strict';
 
 // HTTP Request example
 var http = require('http');
+var urlencode = require('urlencode');
 
 describe('Server API tests', function() {
+    'use strict';
 
     it('Should return restaurants given a places request', function(done) {
         // Add server test
-        var post_data = 'asdafd',
-            options = {
-            host: 'example.com',
-            port: '80',
-            path: '/path',
-            method: 'POST',
+
+       //  https://maps.google.com/maps?ll=36.15768,-86.764677&spn=0.014986,0.033023&t=m&z=16
+
+        var get_data = 'lat=36.15768&lng=-86.764677&dist=1000&cat=restaurant',
+
+        options = {
+            host: 'localhost',
+            port: '3700',
+            path: '/places?'+get_data,
+            method: 'GET',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'Content-Length': post_data.length
+                'Content-Type': 'application/x-www-form-urlencoded'
             }
         };
 
@@ -26,7 +30,6 @@ describe('Server API tests', function() {
         });
 
         // write the request parameters
-        req.write('post=data&is=specified&like=this');
         req.end();
         // HTTP Request example END
 
