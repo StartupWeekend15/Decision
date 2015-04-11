@@ -8,7 +8,6 @@ require.config({
         jquery: './lib/jquery-2.1.3.min',
     }
 });
-console.log('Hello World!');
 
 define(['Client'], function(Client) {
     var client = new Client({});
@@ -28,4 +27,16 @@ define(['Client'], function(Client) {
     // Hook up the click listeners
     // TODO
     
+    $(function() {
+      $( "#slider" ).slider({
+        min: 1,
+        max: 20,
+        step: 1,
+        value: 5,
+        slide: function (event, ui) {
+          $("#distance").html(ui.value);
+        }
+      });
+    });
+
 });

@@ -15,6 +15,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 // styles
 app.use(express.static(__dirname + '/../client/css'));
 
+// scripts
+app.use(express.static(__dirname + '/../client/js'));
+
 app.get('/', function(req, res){
   res.render('index');
 });
