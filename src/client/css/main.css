@@ -1,0 +1,6 @@
+.category {
+  margin-top: 20px;
+}
+a, .selection {
+  cursor: pointer;
+}

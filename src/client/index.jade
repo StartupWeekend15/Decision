@@ -4,7 +4,33 @@ html
     title= "Decision"
     link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css")
     link(rel="stylesheet" href="jumbotron-narrow.css")
+    link(rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css")
+    script(src="//code.jquery.com/jquery-1.10.2.js")
+    script(src="//code.jquery.com/ui/1.11.4/jquery-ui.js")
+    link(rel="stylesheet" href="main.css")
+    script(data-main='/js/main.js', src="/js/lib/require.min.js")
   body
     div.container
+      div.header.clearfix
+        h3 Decision App!
+    div.container
       div.jumbotron
-        h2 This app needs info!
+        div.distance
+          label Distance in Miles:&nbsp;
+          label#distance 5
+          div#slider
+        div.category
+          div.row
+            div.col-xs-4
+              a.glyphicon.glyphicon-cutlery
+              div
+                label.selection Food
+            div.col-xs-4
+              a.glyphicon.glyphicon-music
+              div
+                label.selection Entertainment
+            div.col-xs-4
+              a.glyphicon.glyphicon-heart
+              div
+                label.selection Recreation
+              //- input.btn.btn-default(type="button" value="Recr")
