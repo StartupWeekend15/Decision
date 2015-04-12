@@ -13,17 +13,12 @@
  */
 define([], function() {
 
-    var CATEGORIES = [
-        'food',
-        'recreation'
-    ];
-    var Client = function(opts) {
-        this.host = opts.host;
-        this.port = opts.port;
-        this.categories = opts.categories || CATEGORIES;
+    var Client = function(categories) {
+        this.categoryMap = categories;
 
         this.lat = 0;
         this.lng = 0;
+        this.distance = 10;  // miles
 
         this.options = {};
         this.remainingOptions = {};
@@ -40,9 +35,9 @@ define([], function() {
         this.lat = lat;
         this.lng = lng;
 
-        this.categories.forEach(function(c) {
-            this._requestOptions(c);
-        },this);
+        for (var id in this.categoryMap) {
+            this._requestOptions(id);
+        }
     };
 
     /**
@@ -51,14 +46,16 @@ define([], function() {
      * @param {String} category
      * @return {undefined}
      */
-    Client.prototype._requestOptions = function(category) {
-        var req = new XMLHttpRequest();
+    Client.prototype._requestOptions = function(id) {
+        var req = new XMLHttpRequest(),
+            distance = this.distance*600,
+            params = 'lat='+this.lat+'&lng='+this.lng+
+                '&dist='+distance+'&categories='+JSON.stringify(this.categoryMap[id]);
 
         req.onload = function(e) {
-            console.log('RESPONSE',req.responseText);
-            this.options[category] = [];
+            this.options[id] = JSON.parse(req.responseText);
         }.bind(this);
-        req.open('get', '/places', true);
+        req.open('get', '/places?'+params, true);
         req.send();
     };
 
@@ -68,10 +65,10 @@ define([], function() {
      * @param {String} category
      * @return {undefined}
      */
-    Client.prototype.getOption = function(category) {
-        console.log('Getting option for', category);
-        this.remainingOptions[category] = this.options[category].slice();
-        return this._getOption(category);
+    Client.prototype.getOption = function(id) {
+        console.log('Getting option for', id);
+        this.remainingOptions[id] = this.options[id].slice();
+        return this._getOption(id);
     };
 
     /**
@@ -81,11 +78,11 @@ define([], function() {
      * @param category
      * @return {undefined}
      */
-    Client.prototype._getOption = function(category) {
-        var count = this.remainingOptions[category].length,
-            index = Math.random(Math.floor()*count);
+    Client.prototype._getOption = function(id) {
+        var count = this.remainingOptions[id].length,
+            index = Math.floor(Math.random()*count);
 
-        return this.remainingOptions[category].splice(index,1)[0];
+        return this.remainingOptions[id].splice(index,1)[0];
     };
 
     return Client;
