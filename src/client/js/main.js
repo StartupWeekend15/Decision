@@ -4,6 +4,21 @@
 
 $.material.init();
 
+function randomBoxes() {
+  var materialPallate = ['red', 'pink', 'purple', 'deep-purple', 'indigo', 'light-blue', 'cyan', 'teal', 'light-green', 'lime', 'light-yellow', 'orange', 'deep-orange', 'blue-grey', 'brown'];
+
+  var colors = _(materialPallate).sample(3).shuffle().value();
+
+  $('.genre').each(function (i, box) {
+    _.forEach(materialPallate, function(clr) {
+      $(box).removeClass('btn-material-' + clr);
+      $(box).addClass('btn-material-' + colors[i], 1000);
+    });
+  });
+
+
+}
+
 // Set up require
 require.config({
     paths: {
@@ -143,6 +158,8 @@ define(['Client',
           var opt = client.getAnotherOption(id);
           displayOption(id, opt);
       });
+
+      setInterval(randomBoxes, 2500);
 
     });
 
