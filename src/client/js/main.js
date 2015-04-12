@@ -81,12 +81,23 @@ define(['Client',
     // Attach click listener for each of the categories' ids
     var displayOption = function(id, option) {
 
-        $('div .category').remove();
+        option = option || {
+          name: "Starbucks",
+          icon: "http://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
+          rating: 4,
+          vicinity: "402 21st Avenue South, Nashville",
+          opening_hours: {open_now: true, weekday_text: []},
+          price_level:2
+        };
+
         var $rt = $(resultTemplate);
-        $rt.find('#name').html(option.name);
-        $rt.find('#location').html(option.location);
-        $rt.find('#review').html(option.review);
-        $rt.insertAfter($('div .distance'));
+        $rt.find('.result__name').html(option.name);
+        $rt.find('.result__hours').html('9:00 AM - 5:00 PM');
+        $rt.find('.result__phone').html('(555) 555-5555');
+        $rt.find('.result__photo').html('<img src="' + option.icon + '">');
+        $rt.find('.result__vicinity').html(option.vicinity);
+
+        $('.jumbotron').replaceWith($rt);
 
         // Set on shake listener/button click listener for the new UI element
         //document.getElementById('shakeButton').onclick = function() {
