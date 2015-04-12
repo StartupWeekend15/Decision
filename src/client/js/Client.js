@@ -48,9 +48,17 @@ define(['Utils'], function(Utils) {
     };
 
     Client.prototype.setZipLocation = function (zip, cb) {
-        console.log('Setting zip location', zip);
+        var self = this;
+        if ( ('' + zip).search(/^\d{5}$/) !== 0) {
+            console.log('Zip code is invalid');
+            return cb();
+        }
         this.zip = zip;
-        this.onUpdate(cb);
+        $.get('http://maps.googleapis.com/maps/api/geocode/json?address=' + zip, function (json) {
+            self.lat = json.results[0].geometry.location.lat;
+            self.lng = json.results[0].geometry.location.lng;
+            self.onUpdate(cb);
+        }, 'json');
     };
 
     Client.prototype.onUpdate = function (cb) {
