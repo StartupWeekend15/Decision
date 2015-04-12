@@ -67,12 +67,17 @@
   .genre-icon {
     padding: 5% 0;
   }
+
+  .slider-label {
+    display: none;
+  }
 }
 
 @media (max-width: 445px) {
   .genre-text {
     font-size: 1.5em;
   }
+
 }
 
 hr {
