@@ -49,6 +49,7 @@ var parameters;
 // TODO
 
 app.get('/places', function (req, res){
+  var num = req.query.num;
   console.log('ll: ',req.query.lat);   
   parameters = {
       location:[req.query.lat, req.query.lng],
@@ -59,16 +60,51 @@ app.get('/places', function (req, res){
   googlePlaces.placeSearch(parameters, function (error, response) {
       if (error) throw error;
       //console.log(response.results);
+     // var results = convert(response.results,num);
+      //console.log('response is', response.results[0]);
+      num = Math.min(response.results.length,num);
+      var results = response.results.map(convertResult);
+      results = results.splice(0,num);
       
-      console.log('response is', response.results[0]);
+      console.log('The places returned: ', results); 
+      console.log('The length of places returned: ', results.length); 
       // populate the response object for get
       //res.json(response.results);  
-      res.send(JSON.stringify(response.results));  
+      res.send(JSON.stringify(results));  
 
   });
 
 
 });
+
+/**
+ * Convert a single request
+ *
+ * @param result
+ * @return {undefined}
+ */
+function convertResult(result){
+    var newRes = {};
+    newRes.name = result.name;
+    newRes.icon  = result.icon;
+    newRes.rating = result.rating;
+    newRes.vicinity = result.vicinity;
+    newRes.opening_hours = result.opening_hours;
+    newRes.price_level = result.price_level;
+    return  newRes;
+}
+
+function convert(data,num){
+    var res = [];
+    for(var i=0; i<i<num;++i){
+        res.push({"name": data[i].name,
+                 "icon": data[i].icon,
+                 "rating": data[i].rating,
+        });
+    }
+}
+
+
 
 app.listen(port);
 console.log('App running on port', port);

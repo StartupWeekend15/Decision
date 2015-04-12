@@ -12,7 +12,7 @@ describe('Server API tests', function() {
 
        //  https://maps.google.com/maps?ll=36.15768,-86.764677&spn=0.014986,0.033023&t=m&z=16
 
-        var get_data = 'lat=36.15768&lng=-86.764677&dist=1000&cat=restaurant',
+        var get_data = 'lat=36.15768&lng=-86.764677&dist=1000&cat=restaurant&num=10',
 
         options = {
             host: 'localhost',
@@ -26,6 +26,11 @@ describe('Server API tests', function() {
 
         var req = http.request(options, function(res) {
             // response is here
+            console.log(Object.keys(res));
+            res.on("data", function(chunk){
+                console.log("Body: " + chunk);
+            });
+            //console.log(res.req);
             done();
         });
 
