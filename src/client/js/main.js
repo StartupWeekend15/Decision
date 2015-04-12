@@ -131,6 +131,10 @@ define(['Client',
         var distance = val.slice(0, -1);
         $('#distance').html(val.slice(0, -1));
       });
+
+      $('.logo').click(function(){
+        location.reload()
+      });
     });
 
 });
