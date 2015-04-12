@@ -18,6 +18,10 @@
 .genre.btn {
   padding-left: 5%;
   padding-right: 5%;
+  -webkit-transition: all 1s !important;
+  -moz-transition: all 1s !important;
+  -o-transition: all 1s !important;
+  transition: all 1s !important;
 }
 
 .genre-icon {
@@ -65,7 +69,6 @@ hr {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
-
 
 .result__ratings {
   unicode-bidi: bidi-override;
