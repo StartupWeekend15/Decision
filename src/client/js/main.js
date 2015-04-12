@@ -2,18 +2,22 @@
 // Main entry point for client side code
 'use strict';
 
+$.material.init()
+
 // Manipulating the UI
 $(function() {
-  $( "#slider" ).slider({
-    min: 0.5,
-    max: 30,
+
+  $("#slider").noUiSlider({
+  	start: 10,
     step: 0.5,
-    value: 5,
-    slide: function (event, ui) {
-      $("#distance").html(ui.value);
-      // Add stuff
-      // TODO
+  	range: {
+  		min: 0.5,
+  		max: 30
     }
+  });
+
+  $('#slider').on('slide', function (event, val) {
+    $('#distance').html(val.slice(0, -1))
   });
 });
 
