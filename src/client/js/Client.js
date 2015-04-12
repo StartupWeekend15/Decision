@@ -78,6 +78,7 @@ define(['Utils'], function(Utils) {
     };
 
     Client.prototype.setDistance = function (dist) {
+        console.log('Setting distance');
         this.distance = dist;
         this.onUpdate();
     };

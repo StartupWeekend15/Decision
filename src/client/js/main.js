@@ -9,6 +9,7 @@ require.config({
     paths: {
         shake: './lib/shake',
         dot: './lib/doT.min',
+        lodash: './lib/lodash.min',
         async: './lib/async'
     },
     map: {
@@ -22,10 +23,12 @@ require.config({
 define(['Client',
        'Utils',
        'shake',
+       'lodash',
        'text!../html/result.html'],
        function(Client,
                 Utils,
                 shake,
+                _,
                 resultTemplate) {
     // Initialize shake listening
     // TODO
@@ -110,9 +113,11 @@ define(['Client',
       });
 
       $('#slider').on('slide', function (event, val) {
+        console.log('Updating slider!');
         var distance = val.slice(0, -1);
-        client.setDistance(+distance);
         $('#distance').html(val.slice(0, -1));
+
+        _.debounce(client.setDistance.bind(null, +distance), 500);
       });
     });
 
