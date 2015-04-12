@@ -14,10 +14,17 @@ describe('Server API tests', function() {
         var cat = params.cat.reduce(function(prev,curr) {
                 return prev+'&cat[]='+curr;
             }, ''),
-            get_data = 'lat='+params.lat+'&lng='+params.lng+'&dist='+
-              params.dist+cat+'&num='+params.num,
+            get_data;
 
-            options = {
+            if (!params.zip) {
+                get_data = 'lat='+params.lat+'&lng='+params.lng;
+            } else {
+                console.log('zip address: ', params.zip);
+                get_data = 'zip='+params.zip;
+            }
+            get_data += '&dist='+ params.dist+cat+'&num='+params.num;
+
+            var options = {
                 host: 'localhost',
                 port: '3700',
                 path: '/places?'+get_data,
@@ -58,6 +65,18 @@ describe('Server API tests', function() {
                        cat:['restaurant', 'cafe'],
                        num:10}, function(chunk) {
 
+            assert.notEqual(chunk.length, 0);
+            console.log(chunk.length);
+            done();
+        });
+    });
+
+    it('Should accept zip code instead of lat,lng', function(done){
+        submitRequest({zip:'37203',
+                       dist:1000,
+                       cat:['restaurant'],
+                       num:10},function(chunk){
+          
             assert.notEqual(chunk.length, 0);
             console.log(chunk.length);
             done();
