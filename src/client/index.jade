@@ -1,18 +1,18 @@
 extends ./layout.jade
 block content
-  div.distance
+  .distance
     label Distance in Miles:&nbsp;
     label#distance 5
-    div.row
+    .row
       .col-sm-1.slider-label 0.5
       .col-sm-10.slider
-        div#slider
+        #slider
       .col-sm-1.slider-label 30
-  div.category
-    div.row
-      div.col-sm-4.selection
-        img.button(src="food.jpg" data-categories='cafe restaurant')#foodButton
-      div.col-sm-4.selection
-        img.button(src="ent.jpg" data-categories='spa zoo movie_rental museum')#entertainmentButton
-      div.col-sm-4.selection
-        img.button(src="rec.jpg" data-categories='shopping_mall night_club')#recreationButton
+  .category
+    .row
+      .col-sm-4.selection
+        img.button#foodButton(src="/img/food.jpg", data-categories="cafe restaurant")
+      .col-sm-4.selection
+        img.button#entertainmentButton(src="/img/ent.jpg", data-categories="spa zoo movie_rental museum")
+      .col-sm-4.selection
+        img.button#recreationButton(src="/img/rec.jpg", data-categories="shopping_mall night_club")
