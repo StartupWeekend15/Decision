@@ -17,30 +17,33 @@ $(function() {
   });
 });
 
-var getCategoryMap = function() {
-    var buttons = $('.button'),
-        categories = {};
-
-    for (var i = buttons.length; i--;) {
-        categories[buttons[i].getAttribute('id')] = buttons[i].getAttribute('data-categories')
-            // Get array of the categories
-            .split(' ')
-            // Remove '' from categories
-            .filter(function(c) {return !!c;});
-    }
-    return categories;
-};
-
 // Set up require
 require.config({
     paths: {
-        jquery: './lib/jquery-2.1.3.min'
+        shake: './lib/shake'
     }
 });
 
 
-define(['Client'], function(Client) {
-    // Get 
+define(['Client', 'Utils', 'shake'], function(Client, Utils, shake) {
+    // Initialize shake listening
+    // TODO
+
+    // This really should be refactored and put in Utils
+    var getCategoryMap = function() {
+        var buttons = $('.button'),
+            categories = {};
+
+        for (var i = buttons.length; i--;) {
+            categories[buttons[i].getAttribute('id')] = buttons[i].getAttribute('data-categories')
+                // Get array of the categories
+                .split(' ')
+                // Remove '' from categories
+                .filter(Utils.isNonEmptyString);
+        }
+        return categories;
+    };
+
     var categories = getCategoryMap(),
         client = new Client(categories);
     var updatePosition = function(pos) {
@@ -58,8 +61,23 @@ define(['Client'], function(Client) {
 
     // Hook up the click listeners
     // Attach click listener for each of the categories' ids
+    var displayOption = function(id, option) {
+
+        // Set on shake listener/button click listener for the new UI element
+        //document.getElementById('shakeButton').onclick = function() {
+            //var opt = client.getAnotherOption(id);
+            //displayOption(id, opt);
+        //};
+        console.log('Displaying option for', id,'(', option.name, ')');
+    };
+
+    var onOptionClicked = function(id) {
+        var result = client.getOption(id);
+        displayOption(id, result);
+    };
+
     for (var id in categories) {
-        document.getElementById(id).onclick = client.getOption.bind(client, id);
+        document.getElementById(id).onclick = onOptionClicked.bind(null, id);
     }
     
 });
