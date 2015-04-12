@@ -61,11 +61,12 @@
 
 @media (max-width: 767px) {
   .genre-text {
-    font-size: 2em;
+    font-size: .8em;
   }
 
   .genre-icon {
     padding: 5% 0;
+    font-size: 2em;
   }
 
   .slider-label {
@@ -75,13 +76,6 @@
   .logo {
     width: 50%;
   }
-}
-
-@media (max-width: 445px) {
-  .genre-text {
-    font-size: 1.5em;
-  }
-
 }
 
 hr {
