@@ -129,7 +129,7 @@ define(['Client',
         $('#distance').html(val.slice(0, -1));
       });
 
-      $('.content').on('click', '.result__restart, .logo', function(){
+      $('.container').on('click', '.result__restart, .logo', function(){
         location.reload()
       });
 
