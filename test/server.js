@@ -1,44 +1,66 @@
 /*globals describe,it*/
 
 // HTTP Request example
-var http = require('http');
-var urlencode = require('urlencode');
+var http = require('http'),
+    urlencode = require('urlencode'),
+    assert = require('assert');
 
 describe('Server API tests', function() {
     'use strict';
 
-    it('Should return restaurants given a places request', function(done) {
-        // Add server test
+    // Helpers
+    var submitRequest = function(params, cb) {
 
-       //  https://maps.google.com/maps?ll=36.15768,-86.764677&spn=0.014986,0.033023&t=m&z=16
+        var cat = params.cat.reduce(function(prev,curr) {
+                return prev+'&cat[]='+curr;
+            }, ''),
+            get_data = 'lat='+params.lat+'&lng='+params.lng+'&dist='+
+              params.dist+cat+'&num='+params.num,
 
-        var get_data = 'lat=36.15768&lng=-86.764677&dist=1000&cat=restaurant&num=10',
-
-        options = {
-            host: 'localhost',
-            port: '3700',
-            path: '/places?'+get_data,
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        };
+            options = {
+                host: 'localhost',
+                port: '3700',
+                path: '/places?'+get_data,
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            };
 
         var req = http.request(options, function(res) {
             // response is here
             console.log(Object.keys(res));
             res.on("data", function(chunk){
                 console.log("Body: " + chunk);
+                cb(JSON.parse(chunk));
             });
-            //console.log(res.req);
+        });
+        req.end();
+    };
+
+    it('Should return restaurants given a places request', function(done) {
+        submitRequest({lat:36.15768,
+                       lng:-86.764677,
+                       dist:1000,
+                       cat:['restaurant'],
+                       num:10}, function(chunk) {
+
+            assert.notEqual(chunk.length, 0);
+            console.log(chunk.length);
             done();
         });
-
-        // write the request parameters
-        req.end();
-        // HTTP Request example END
-
-        // TODO
     });
 
+    it('Should accepts multiple types', function(done) {
+        submitRequest({lat:36.15768,
+                       lng:-86.764677,
+                       dist:1000,
+                       cat:['restaurant', 'cafe'],
+                       num:10}, function(chunk) {
+
+            assert.notEqual(chunk.length, 0);
+            console.log(chunk.length);
+            done();
+        });
+    });
 });

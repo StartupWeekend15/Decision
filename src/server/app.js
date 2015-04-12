@@ -50,7 +50,8 @@ var parameters;
 
 app.get('/places', function (req, res){
   var num = req.query.num;
-  console.log('ll: ',req.query.lat);   
+
+  console.log('categories:', req.query.cat);
   parameters = {
       location:[req.query.lat, req.query.lng],
       types:req.query.cat,
@@ -59,9 +60,7 @@ app.get('/places', function (req, res){
 
   googlePlaces.placeSearch(parameters, function (error, response) {
       if (error) throw error;
-      //console.log(response.results);
-     // var results = convert(response.results,num);
-      //console.log('response is', response.results[0]);
+
       num = Math.min(response.results.length,num);
       var results = response.results.map(convertResult);
       results = results.splice(0,num);
@@ -87,8 +86,7 @@ function convertResult(result){
     var newRes = {};
     newRes.name = result.name;
     newRes.icon  = result.icon;
-    newRes.rating = result.rating;
-    newRes.vicinity = result.vicinity;
+    newRes.rating = result.rating; newRes.vicinity = result.vicinity;
     newRes.opening_hours = result.opening_hours;
     newRes.price_level = result.price_level;
     return  newRes;
