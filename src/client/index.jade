@@ -1,33 +1,18 @@
-doctype
-html
-  head
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    title= "Decision"
-    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css")
-    link(rel="stylesheet" href="jumbotron-narrow.css")
-    link(rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css")
-    link(rel="stylesheet" href="main.css")
-    script(src="//code.jquery.com/jquery-1.10.2.js")
-    script(src="//code.jquery.com/ui/1.11.4/jquery-ui.js")
-    script(src="lib/jquery.ui.touch-punch.min.js")
-    script(data-main='/js/main.js', src="/js/lib/require.min.js")
-  body
-    div.container
-      div.header.clearfix
-        h3 Decision App!
-    div.container
-      div.jumbotron
-        div.distance
-          label Distance in Miles:&nbsp;
-          label#distance 5
-          div#slider
-        div.category
-          div.row
-            div.col-sm-4.selection
-              img.button(src="food.jpg")#foodButton(data-categories='cafe restaurant')
-            div.col-sm-4.selection
-              img.button(src="ent.jpg")#entertainmentButton(data-categories='spa zoo movie_rental museum')
-            div.col-sm-4.selection
-              img.button(src="rec.jpg")#recreationButton(data-categories='shopping_mall night_club')
+extends ./layout.jade
+block content
+  div.distance
+    label Distance in Miles:&nbsp;
+    label#distance 5
+    div.row
+      .col-sm-1.slider-label 0.5
+      .col-sm-10.slider
+        div#slider
+      .col-sm-1.slider-label 30
+  div.category
+    div.row
+      div.col-sm-4.selection
+        img.button(src="food.jpg" data-categories='cafe restaurant')#foodButton
+      div.col-sm-4.selection
+        img.button(src="ent.jpg" data-categories='spa zoo movie_rental museum')#entertainmentButton
+      div.col-sm-4.selection
+        img.button(src="rec.jpg" data-categories='shopping_mall night_club')#recreationButton
