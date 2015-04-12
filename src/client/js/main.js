@@ -2,24 +2,7 @@
 // Main entry point for client side code
 'use strict';
 
-$.material.init()
-
-// Manipulating the UI
-$(function() {
-
-  $("#slider").noUiSlider({
-  	start: 10,
-    step: 0.5,
-  	range: {
-  		min: 0.5,
-  		max: 30
-    }
-  });
-
-  $('#slider').on('slide', function (event, val) {
-    $('#distance').html(val.slice(0, -1))
-  });
-});
+$.material.init();
 
 // Set up require
 require.config({
@@ -79,6 +62,10 @@ define(['Client',
 
     // Hook up the click listeners
     // Attach click listener for each of the categories' ids
+    var displayNoOption = function() {
+        // TODO
+        console.log('No options found!');
+    };
     var displayOption = function(id, option) {
 
         option = option || {
@@ -109,12 +96,35 @@ define(['Client',
 
     var onOptionClicked = function(id) {
         client.getOption(id, function(result) {
-            displayOption(id, result);
+            if (result) {
+                displayOption(id, result);
+            } else {  // No options
+                displayNoOption();
+            }
         });
     };
 
     for (var id in categories) {
         document.getElementById(id).onclick = onOptionClicked.bind(null, id);
     }
+
+    // Manipulating the UI
+    $(function() {
+
+      $("#slider").noUiSlider({
+        start: 10,
+        step: 0.5,
+        range: {
+          min: 0.5,
+          max: 30
+        }
+      });
+
+      $('#slider').on('slide', function (event, val) {
+        var distance = val.slice(0, -1);
+        client.setDistance(+distance);
+        $('#distance').html(val.slice(0, -1));
+      });
+    });
 
 });
