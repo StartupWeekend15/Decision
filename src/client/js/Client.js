@@ -116,6 +116,7 @@ define(['Utils'], function(Utils) {
         var fn = function() {
             console.log('Getting option for', id);
             this.remainingOptions[id] = this.options[id].slice();
+            console.log('there', this.remainingOptions[id]);
             return cb(this._getOption(id));
         }.bind(this);
         if (!this.lat) {
@@ -127,6 +128,8 @@ define(['Utils'], function(Utils) {
     };
 
     Client.prototype.getAnotherOption = function(id) {
+        if (!this.remainingOptions[id])
+            return null;
         var count = this.remainingOptions[id].length,
             index = Math.floor(Math.random()*count);
 

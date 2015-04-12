@@ -68,17 +68,22 @@ define(['Client',
     var displayNoOption = function() {
         // TODO
         console.log('No options found!');
+        // alert('No more new options for you. You can restart!');
+        // location.reload();
     };
     var displayOption = function(id, option) {
 
-        // option = option || {
-        //   name: "Starbucks",
-        //   icon: "http://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
-        //   rating: 4,
-        //   vicinity: "402 21st Avenue South, Nashville",
-        //   opening_hours: {open_now: true, weekday_text: []},
-        //   price_level:2
-        // };
+        if (option === null) {
+            console.log("Shouldn't be called with null option");
+            option = option || {
+              name: "Starbucks",
+              icon: "http://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
+              rating: 4,
+              vicinity: "402 21st Avenue South, Nashville",
+              opening_hours: {open_now: true, weekday_text: []},
+              price_level:2
+            };
+        }
 
         var $rt = $(resultTemplate);
         $rt.find('.result__name').html(option.name);
@@ -139,7 +144,11 @@ define(['Client',
 
       $('.content').on('click', '.result__retry', function(){
           var opt = client.getAnotherOption(id);
-          displayOption(id, opt);
+          if (opt === null) {
+            displayNoOption();
+          } else {
+              displayOption(id, opt);
+          }
       });
 
     });
