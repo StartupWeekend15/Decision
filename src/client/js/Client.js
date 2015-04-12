@@ -47,13 +47,12 @@ define(['Utils'], function(Utils) {
         this.onUpdate();
     };
 
-    Client.prototype.setZipLocation = function (zip, cb) {
+    Client.prototype.getLatLngFromZip = function (zip, cb) {
         var self = this;
-        if ( ('' + zip).search(/^\d{5}$/) !== 0) {
+        if (!/^\d{5}$/.test(zip)) {
             console.log('Zip code is invalid');
             return cb();
         }
-        this.zip = zip;
         $.get('http://maps.googleapis.com/maps/api/geocode/json?address=' + zip, function (json) {
             self.lat = json.results[0].geometry.location.lat;
             self.lng = json.results[0].geometry.location.lng;
@@ -120,7 +119,7 @@ define(['Utils'], function(Utils) {
         }.bind(this);
         if (!this.lat) {
             var zip = prompt("What's your zip code?");
-            this.setZipLocation(zip, fn);
+            this.getLatLngFromZip(zip, fn);
         } else {
             fn();
         }
