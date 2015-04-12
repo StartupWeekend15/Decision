@@ -40,6 +40,11 @@ define([], function() {
         }
     };
 
+    Client.prototype.setZipLocation = function (zip) {
+        console.log('Setting zip location', zip);
+        this.zip = zip;
+    };
+
     /**
      * Request the local options from the server for the given category
      *
@@ -66,9 +71,14 @@ define([], function() {
      * @return {undefined}
      */
     Client.prototype.getOption = function(id) {
-        console.log('Getting option for', id);
-        this.remainingOptions[id] = this.options[id].slice();
-        return this._getOption(id);
+        if (!this.lat) {
+            var zip = prompt("What's your zip code?");
+            this.setZipLocation(zip);
+        } else {
+            console.log('Getting option for', id);
+            this.remainingOptions[id] = this.options[id].slice();
+            return this._getOption(id);
+        }
     };
 
     /**
