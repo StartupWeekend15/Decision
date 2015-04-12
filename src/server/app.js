@@ -1,5 +1,6 @@
 /*jshint node: true*/
 'use strict';
+var shuffle = require('lodash.shuffle');
 
 var express = require("express");
 var bodyParser = require('body-parser');
@@ -64,6 +65,7 @@ app.get('/places', function (req, res){
       //console.log('response is', response.results[0]);
       num = Math.min(response.results.length,num);
       var results = response.results.map(convertResult);
+      results = shuffle(results);
       results = results.splice(0,num);
       
       console.log('The places returned: ', results); 
