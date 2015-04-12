@@ -68,14 +68,14 @@ define(['Client',
     };
     var displayOption = function(id, option) {
 
-        option = option || {
-          name: "Starbucks",
-          icon: "http://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
-          rating: 4,
-          vicinity: "402 21st Avenue South, Nashville",
-          opening_hours: {open_now: true, weekday_text: []},
-          price_level:2
-        };
+        // option = option || {
+        //   name: "Starbucks",
+        //   icon: "http://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
+        //   rating: 4,
+        //   vicinity: "402 21st Avenue South, Nashville",
+        //   opening_hours: {open_now: true, weekday_text: []},
+        //   price_level:2
+        // };
 
         var $rt = $(resultTemplate);
         $rt.find('.result__name').html(option.name);
