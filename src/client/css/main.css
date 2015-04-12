@@ -27,6 +27,36 @@
   font-size: 1em;
 }
 
+.result__map-icon {
+  margin-right: 10px;
+}
+
+.result__accept {
+  padding: 20px;
+}
+
+.result__accept, .result__retry {
+  padding: 20px;
+}
+
+.result__photo {
+  border: 1px solid rgba(0,0,0,.1);
+  padding: 5%;
+  border-radius: 5px;
+}
+
+.result__primary {
+  text-align: left;
+}
+
+.result__name {
+  font-size: 2em;
+}
+
+.result__location {
+  margin: 20px;
+}
+
 @media (max-width: 767px) {
   .genre-text {
     font-size: 2em;
@@ -41,4 +71,11 @@
   .genre-text {
     font-size: 1.5em;
   }
+}
+
+hr {
+  border: 0;
+  height: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }

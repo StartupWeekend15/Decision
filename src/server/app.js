@@ -36,7 +36,7 @@ app.get('/', function(req, res){
 //    + distance (set it to default value)
 //      shuffle the returned values
 
-process.env.GOOGLE_PLACES_API_KEY = "AIzaSyDP9pkfwEz2tMQbvnyz8ugNNl2jfCznIRs";
+process.env.GOOGLE_PLACES_API_KEY = "AIzaSyDIw6RsLMhU2Z3WRNDpWlx3iOGJjfRFkj4";
 
 process.env.GOOGLE_PLACES_OUTPUT_FORMAT = "json";
 
