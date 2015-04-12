@@ -5,12 +5,14 @@
 // Manipulating the UI
 $(function() {
   $( "#slider" ).slider({
-    min: 1,
-    max: 20,
-    step: 1,
+    min: 0.5,
+    max: 30,
+    step: 0.5,
     value: 5,
     slide: function (event, ui) {
       $("#distance").html(ui.value);
+      // Add stuff
+      // TODO
     }
   });
 });
