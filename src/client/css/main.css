@@ -76,6 +76,14 @@
   .logo {
     width: 50%;
   }
+
+  .category {
+    margin-top: 10px;
+  }
+
+  hr {
+    margin: 10px 0;
+  }
 }
 
 hr {
