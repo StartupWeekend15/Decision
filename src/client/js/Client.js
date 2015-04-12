@@ -48,7 +48,7 @@ define([], function() {
      */
     Client.prototype._requestOptions = function(id) {
         var req = new XMLHttpRequest(),
-            distance = this.distance*600,
+            distance = (this.distance/.6)*1000, // Convert to meters
             params = 'lat='+this.lat+'&lng='+this.lng+
                 '&dist='+distance+'&categories='+JSON.stringify(this.categoryMap[id]);
 
