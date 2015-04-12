@@ -123,12 +123,13 @@ define(['Client',
         }
       });
 
+      $('#slider').on('slide', _.debounce(function (event, val) {
+        client.setDistance(+val)
+      }, 500));
+
       $('#slider').on('slide', function (event, val) {
-        console.log('Updating slider!');
         var distance = val.slice(0, -1);
         $('#distance').html(val.slice(0, -1));
-
-        _.debounce(client.setDistance.bind(null, +distance), 500);
       });
     });
 
