@@ -21,3 +21,8 @@
   margin: 0 auto;
   padding-bottom: 30px;
 }
+
+.genre.btn {
+  padding-left: 5%;
+  padding-right: 5%;
+}
