@@ -71,6 +71,10 @@
   .slider-label {
     display: none;
   }
+
+  .logo {
+    width: 50%;
+  }
 }
 
 @media (max-width: 445px) {
