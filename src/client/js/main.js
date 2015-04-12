@@ -87,13 +87,8 @@ define(['Client',
         $rt.find('.result__photo').html('<img src="' + option.icon + '">');
         $rt.find('.result__vicinity').html(option.vicinity);
 
-        $('.jumbotron').replaceWith($rt);
+        $('.content').html($rt);
 
-        // Set on shake listener/button click listener for the new UI element
-        //document.getElementById('shakeButton').onclick = function() {
-            //var opt = client.getAnotherOption(id);
-            //displayOption(id, opt);
-        //};
         console.log('Displaying option for', id,'(', option.name, ')');
     };
 
@@ -132,14 +127,21 @@ define(['Client',
         $('#distance').html(val.slice(0, -1));
       });
 
-      $('.container').on('click', '.result__restart, .logo', function(){
+      $('.content').on('click', '.result__restart, .logo', function(){
         location.reload()
       });
 
-      $('.container').on('click', '.result__accept', function(){
+      $('.content').on('click', '.result__accept', function(){
         confirm('Awesome! Tweet now?');
         location.reload();
       });
+
+
+      $('.content').on('click', '.result__retry', function(){
+          var opt = client.getAnotherOption(id);
+          displayOption(id, opt);
+      });
+
     });
 
 });
