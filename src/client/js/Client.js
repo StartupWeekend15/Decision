@@ -11,7 +11,7 @@
  *
  *      + Request the category options
  */
-define([], function() {
+define(['Utils'], function(Utils) {
 
     var Client = function(categories) {
         this.categoryMap = categories;
@@ -35,15 +35,30 @@ define([], function() {
     Client.prototype.setLocation = function(lat, lng) {
         this.lat = lat;
         this.lng = lng;
-
-        for (var id in this.categoryMap) {
-            this._requestOptions(id);
-        }
+        this.onLocationUpdate();
     };
 
-    Client.prototype.setZipLocation = function (zip) {
+    Client.prototype.setZipLocation = function (zip, cb) {
         console.log('Setting zip location', zip);
         this.zip = zip;
+        this.onLocationUpdate(cb);
+    };
+
+    Client.prototype.onLocationUpdate = function (cb) {
+        var len,
+            callback;
+
+        cb = cb || Utils.nop;
+        len = Object.keys(this.categoryMap).length;
+        callback = function() {
+            if (--len === 0) {
+                cb();
+            }
+        };
+
+        for (var id in this.categoryMap) {
+            this._requestOptions(id, callback);
+        }
     };
 
     /**
@@ -52,7 +67,7 @@ define([], function() {
      * @param {String} category
      * @return {undefined}
      */
-    Client.prototype._requestOptions = function(id) {
+    Client.prototype._requestOptions = function(id, callback) {
         var req = new XMLHttpRequest(),
             distance = (this.distance/0.6)*1000, // Convert to meters
             types = this.categoryMap[id].reduce(function(p,c) {
@@ -63,6 +78,7 @@ define([], function() {
 
         req.onload = function(e) {
             this.options[id] = JSON.parse(req.responseText);
+            callback();
         }.bind(this);
         req.open('get', '/places?'+params, true);
         req.send();
@@ -74,14 +90,17 @@ define([], function() {
      * @param {String} category
      * @return {undefined}
      */
-    Client.prototype.getOption = function(id) {
-        if (!this.lat) {
-            var zip = prompt("What's your zip code?");
-            this.setZipLocation(zip);
-        } else {
+    Client.prototype.getOption = function(id, cb) {
+        var fn = function() {
             console.log('Getting option for', id);
             this.remainingOptions[id] = this.options[id].slice();
-            return this._getOption(id);
+            return cb(this._getOption(id));
+        }.bind(this);
+        if (!this.lat) {
+            var zip = prompt("What's your zip code?");
+            this.setZipLocation(zip, fn);
+        } else {
+            fn();
         }
     };
 

@@ -20,7 +20,8 @@ $(function() {
 // Set up require
 require.config({
     paths: {
-        shake: './lib/shake'
+        shake: './lib/shake',
+        async: './lib/async'
     }
 });
 
@@ -72,8 +73,9 @@ define(['Client', 'Utils', 'shake'], function(Client, Utils, shake) {
     };
 
     var onOptionClicked = function(id) {
-        var result = client.getOption(id);
-        displayOption(id, result);
+        client.getOption(id, function(result) {
+            displayOption(id, result);
+        });
     };
 
     for (var id in categories) {
