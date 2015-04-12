@@ -135,6 +135,11 @@ define(['Client',
       $('.container').on('click', '.result__restart, .logo', function(){
         location.reload()
       });
+
+      $('.container').on('click', '.result__accept', function(){
+        confirm('Awesome! Tweet now?');
+        location.reload();
+      });
     });
 
 });
