@@ -62,6 +62,10 @@ define(['Client',
 
     // Hook up the click listeners
     // Attach click listener for each of the categories' ids
+    var displayNoOption = function() {
+        // TODO
+        console.log('No options found!');
+    };
     var displayOption = function(id, option) {
 
         $('div .category').remove();
@@ -81,7 +85,11 @@ define(['Client',
 
     var onOptionClicked = function(id) {
         client.getOption(id, function(result) {
-            displayOption(id, result);
+            if (result) {
+                displayOption(id, result);
+            } else {  // No options
+                displayNoOption();
+            }
         });
     };
 
