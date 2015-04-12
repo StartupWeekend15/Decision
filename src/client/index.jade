@@ -1,13 +1,17 @@
 doctype
 html
   head
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     title= "Decision"
     link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css")
     link(rel="stylesheet" href="jumbotron-narrow.css")
     link(rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css")
+    link(rel="stylesheet" href="main.css")
     script(src="//code.jquery.com/jquery-1.10.2.js")
     script(src="//code.jquery.com/ui/1.11.4/jquery-ui.js")
-    link(rel="stylesheet" href="main.css")
+    script(src="lib/jquery.ui.touch-punch.min.js")
     script(data-main='/js/main.js', src="/js/lib/require.min.js")
   body
     div.container
@@ -21,16 +25,9 @@ html
           div#slider
         div.category
           div.row
-            div.col-xs-4
-              a.glyphicon.glyphicon-cutlery
-              div
-                label.selection Food
-            div.col-xs-4
-              a.glyphicon.glyphicon-music
-              div
-                label.selection Entertainment
-            div.col-xs-4
-              a.glyphicon.glyphicon-heart
-              div
-                label.selection Recreation
-              //- input.btn.btn-default(type="button" value="Recr")
+            div.col-sm-4.selection
+              img(src="food.jpg")#foodButton(data-categories='cafe restaurant')
+            div.col-sm-4.selection
+              img(src="ent.jpg")#entertainmentButton(data-categories='spa zoo movie_rental museum')
+            div.col-sm-4.selection
+              img(src="rec.jpg")#recreationButton(data-categories='shopping_mall night_club')
