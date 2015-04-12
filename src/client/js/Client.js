@@ -22,7 +22,16 @@ define(['Utils'], function(Utils) {
         this.entropy = 10;  // options to randomly choose between
 
         this.options = {};
+        this.init();
+
         this.remainingOptions = {};
+    };
+
+    Client.prototype.init = function() {
+        // Initialize options
+        for (var id in this.categoryMap) {
+            this.options[id] = [];
+        }
     };
 
     /**
