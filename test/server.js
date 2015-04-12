@@ -26,6 +26,7 @@ describe('Server API tests', function() {
 
         var req = http.request(options, function(res) {
             // response is here
+            //console.log(res.body);
             done();
         });
 

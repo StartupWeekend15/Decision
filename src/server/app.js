@@ -57,15 +57,36 @@ app.get('/places', function (req, res){
       if (error) throw error;
       //console.log(response.results);
       
-      console.log('response is', response.results[0]);
+      //console.log('response is', response.results[0]);
+      var results = response.results.map(convertResult);
+      console.log('The length of places returned: ', results.length); 
+      console.log('The places returned: ', results); 
       // populate the response object for get
       //res.json(response.results);  
-      res.send(JSON.stringify(response.results));  
+      res.send(JSON.stringify(results));  
 
   });
 
 
 });
+
+/**
+ * Convert a single request
+ *
+ * @param result
+ * @return {undefined}
+ */
+function convertResult(result){
+    var newRes = {};
+    newRes.name = result.name;
+    newRes.icon  = result.icon;
+    newRes.rating = result.rating;
+    newRes.vicinity = result.vicinity;
+    newRes.opening_hours = result.opening_hours;
+    return  newRes;
+}
+
+
 
 app.listen(port);
 console.log('App running on port', port);
