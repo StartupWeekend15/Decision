@@ -35,16 +35,16 @@ define(['Utils'], function(Utils) {
     Client.prototype.setLocation = function(lat, lng) {
         this.lat = lat;
         this.lng = lng;
-        this.onLocationUpdate();
+        this.onUpdate();
     };
 
     Client.prototype.setZipLocation = function (zip, cb) {
         console.log('Setting zip location', zip);
         this.zip = zip;
-        this.onLocationUpdate(cb);
+        this.onUpdate(cb);
     };
 
-    Client.prototype.onLocationUpdate = function (cb) {
+    Client.prototype.onUpdate = function (cb) {
         var len,
             callback;
 
@@ -59,6 +59,11 @@ define(['Utils'], function(Utils) {
         for (var id in this.categoryMap) {
             this._requestOptions(id, callback);
         }
+    };
+
+    Client.prototype.setDistance = function (dist) {
+        this.distance = dist;
+        this.onUpdate();
     };
 
     /**
