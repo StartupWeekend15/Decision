@@ -1,6 +1,12 @@
 .category {
   margin-top: 20px;
 }
-a, .selection {
+
+.selection {
+  padding-top: 30px;
+}
+.selection img {
   cursor: pointer;
+  width: 180px;
+  height: 180px;
 }

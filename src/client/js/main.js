@@ -34,7 +34,7 @@ var getCategoryMap = function() {
 // Set up require
 require.config({
     paths: {
-        jquery: './lib/jquery-2.1.3.min',
+        jquery: './lib/jquery-2.1.3.min'
     }
 });
 
