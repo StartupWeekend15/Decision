@@ -49,7 +49,7 @@ define(['Client',
 
     // This really should be refactored and put in Utils
     var getCategoryMap = function() {
-        var buttons = $('.button'),
+        var buttons = $('.genre'),
             categories = {};
 
         for (var i = buttons.length; i--;) {
@@ -105,5 +105,5 @@ define(['Client',
     for (var id in categories) {
         document.getElementById(id).onclick = onOptionClicked.bind(null, id);
     }
-    
+
 });
