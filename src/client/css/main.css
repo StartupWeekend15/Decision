@@ -7,17 +7,38 @@
   padding-right: 1px;
 }
 
-.selection {
-  padding-top: 30px;
-}
-.selection img {
-  cursor: pointer;
-  width: 180px;
-  height: 180px;
-}
-
 .logo {
   display: block;
   margin: 0 auto;
   padding-bottom: 30px;
+}
+
+.genre.btn {
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.genre-icon {
+  font-size: 5em;
+  padding: 15% 0;
+}
+
+.genre-text {
+  font-size: 1em;
+}
+
+@media (max-width: 767px) {
+  .genre-text {
+    font-size: 2em;
+  }
+
+  .genre-icon {
+    padding: 5% 0;
+  }
+}
+
+@media (max-width: 445px) {
+  .genre-text {
+    font-size: 1.5em;
+  }
 }
