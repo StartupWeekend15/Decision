@@ -11,7 +11,7 @@
  *
  *      + Request the category options
  */
-define([], function() {
+define(['text!../result.html',], function(resultTemplate) {
 
     var Client = function(categories) {
         this.categoryMap = categories;
@@ -71,14 +71,30 @@ define([], function() {
      * @return {undefined}
      */
     Client.prototype.getOption = function(id) {
-        if (!this.lat) {
-            var zip = prompt("What's your zip code?");
-            this.setZipLocation(zip);
-        } else {
+        // if (!this.lat) {
+        //     var zip = prompt("What's your zip code?");
+        //     this.setZipLocation(zip);
+        // } else {
             console.log('Getting option for', id);
-            this.remainingOptions[id] = this.options[id].slice();
-            return this._getOption(id);
-        }
+            // this.remainingOptions[id] = this.options[id].slice();
+            // var options = this._getOption(id) || { name: 'Food Palace'};
+            var options = undefined;
+            this.showRecommendations(options);
+        // }
+    };
+
+    Client.prototype.showRecommendations = function(options) {
+        options = options || {
+            name: 'The best restaurant for you',
+            location: 'Right next to you',
+            review: 'You will eat your fingers'
+        };
+        $('div .category').remove();
+        var $rt = $(resultTemplate);
+        $rt.find('#name').html(options.name);
+        $rt.find('#location').html(options.location);
+        $rt.find('#review').html(options.review);
+        $rt.insertAfter($('div .distance'));
     };
 
     /**
