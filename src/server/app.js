@@ -46,7 +46,38 @@ process.env.GOOGLE_PLACES_OUTPUT_FORMAT = "json";
 var googlePlaces = new google_places(process.env.GOOGLE_PLACES_API_KEY, process.env.GOOGLE_PLACES_OUTPUT_FORMAT);
 var parameters;
 
-// TODO
+// Caching
+var initIfNeeded = function(obj, key) {
+    if (obj[key] === undefined) {
+        obj[key] = {};
+    }
+};
+var cache = {};
+var getPlaces = function(params, callback) {
+    var loc = params.location.join(','),
+        types = params.types.join(','),
+        radius = params.radius;
+
+    initIfNeeded(cache, loc);
+    initIfNeeded(cache[loc], types);
+    if (cache[loc][types][radius]) {
+        console.log('Retrieving from cache', cache[loc][types][radius]); 
+        callback(cache[loc][types][radius].slice());
+    } else {
+      googlePlaces.placeSearch(parameters, function (error, response) {
+          if (error) {
+              throw error;
+          }
+
+          var results = response.results.map(convertResult);
+          
+          console.log('Loading places', results); 
+          cache[loc][types][radius] = results.slice();
+          callback(results);
+      });
+
+    }
+};
 
 app.get('/places', function (req, res){
   var num = req.query.num;
@@ -58,22 +89,12 @@ app.get('/places', function (req, res){
       radius:req.query.dist
   };    
 
-  googlePlaces.placeSearch(parameters, function (error, response) {
-      if (error) throw error;
-
-      num = Math.min(response.results.length,num);
-      var results = response.results.map(convertResult);
+  getPlaces(parameters, function(results) {
+      num = Math.min(results.length,num);
       results = results.splice(0,num);
-      
-      console.log('The places returned: ', results); 
-      console.log('The length of places returned: ', results.length); 
-      // populate the response object for get
-      //res.json(response.results);  
       res.send(JSON.stringify(results));  
-
   });
-
-
+  
 });
 
 /**
