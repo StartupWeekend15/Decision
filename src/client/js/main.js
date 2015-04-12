@@ -80,12 +80,14 @@ define(['Client',
         //   price_level:2
         // };
 
+        var addressQuery = option.vicinity.split(' ').join('+');
+
         var $rt = $(resultTemplate);
         $rt.find('.result__name').html(option.name);
         $rt.find('.result__hours').html('9:00 AM - 5:00 PM');
         $rt.find('.result__phone').html('(555) 555-5555');
         $rt.find('.result__photo').html('<img src="' + option.icon + '">');
-        $rt.find('.result__vicinity').html(option.vicinity);
+        $rt.find('.result__vicinity').html('<a href="http://maps.google.com/?q=' + addressQuery + '" target="_blank">'+option.vicinity+'</a>');
 
         $('.content').html($rt);
 
