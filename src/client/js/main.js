@@ -68,6 +68,7 @@ define(['Client',
     // TODO
 
     // This really should be refactored and put in Utils
+    var currentId = null;
     var getCategoryMap = function() {
         var buttons = $('.genre'),
             categories = {};
@@ -84,6 +85,7 @@ define(['Client',
 
     var categories = getCategoryMap(),
         client = new Client(categories);
+
     var updatePosition = function(pos) {
         // Check for a certain amount of movement?
         console.log('Updating position', pos.coords);
@@ -107,7 +109,7 @@ define(['Client',
     };
     var displayOption = function(id, option) {
         if (!option) {
-            return displayOption();
+            return displayNoOption();
         }
 
         // option = option || {
@@ -130,22 +132,13 @@ define(['Client',
 
         $('.content').html($rt);
 
-        // Set event listener
-        $('.content').on('click', '.result__retry', function(){
-            var opt = client.getAnotherOption(id);
-            displayOption(id, opt);
-        });
-
         console.log('Displaying option for', id,'(', option.name, ')');
     };
 
     var onOptionClicked = function(id) {
+        currentId = id;
         client.getOption(id, function(result) {
-            if (result) {
-                displayOption(id, result);
-            } else {  // No options
-                displayNoOption();
-            }
+            displayOption(id, result);
         });
     };
 
@@ -181,6 +174,12 @@ define(['Client',
       $('.content').on('click', '.result__accept', function(){
         //confirm('Awesome! Tweet now?');
         location.reload();  // FIXME Change this not to reload the whole page...
+      });
+
+      // Set event listener
+      $('.content').on('click', '.result__retry', function(){
+          var opt = client.getAnotherOption(currentId);
+          displayOption(currentId, opt);
       });
 
 
