@@ -11,6 +11,7 @@
 var express = require("express"),
     bodyParser = require('body-parser'),
     google_places = require('googleplaces'),
+    TestRequestor = require('./TestRequestor'),
     R = require('ramda'),
     shuffle = require('lodash.shuffle');
 
@@ -18,7 +19,7 @@ var Server = function(opts) {
     this._cache = {};
 
     // Set up the requestor
-    this._requestor = null;
+    this.requestor = null;
     this.initializeRequestor(opts);
 
     this._port = opts.port;
@@ -33,7 +34,11 @@ var Server = function(opts) {
  * @return {undefined}
  */
 Server.prototype.initializeRequestor = function(opts) {
-    this.requestor = new google_places(opts.apiKey, 'json');
+    if (opts.requestor === 'Test') {
+        this.requestor = new TestRequestor();
+    } else {
+        this.requestor = new google_places(opts.apiKey, 'json');
+    }
 };
 
 Server.prototype.initializeApp = function() {
@@ -60,7 +65,6 @@ Server.prototype.initializeApp = function() {
     this._app.get('/places', function (req, res) {
         var num = req.query.num;
 
-        console.log('categories:', req.query.cat);
         var parameters = {
             location:[req.query.lat, req.query.lng],
             types:req.query.cat,
@@ -110,10 +114,9 @@ Server.prototype.cachePlaces = function(params, value) {
 Server.prototype.getPlaces = function(params, callback) {
     this.getPlacesFromCache(params, function(cachedValue) {
         if (cachedValue) {
-            console.log('Retrieving from cache', cachedValue); 
             callback(cachedValue.slice());
         } else {
-          this.requestor.placeSearch(params, function (error, response) {
+          this.requestor.request(params, function (error, response) {
               if (error) {
                   throw error;
               }
@@ -121,7 +124,6 @@ Server.prototype.getPlaces = function(params, callback) {
               var results = response.results.map(this.convertResult);
               
               this.cachePlaces(params, results);
-              console.log('Loading places', results); 
               callback(results);
           }.bind(this));
         }
@@ -139,8 +141,9 @@ Server.prototype.convertResult = function(result) {
     return R.pick(fields, result);
 };
 
-Server.prototype.start = function() {
-    this._app.listen(this._port);
+Server.prototype.start = function(callback) {
+    callback = callback || function(){};
+    this._app.listen(this._port, callback);
     console.log('App running on port', this._port);
 };
 
