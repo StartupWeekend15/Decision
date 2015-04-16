@@ -1,18 +1,27 @@
 extends ./layout.jade
 block content
-  div.distance
-    label Distance in Miles:&nbsp;
-    label#distance 5
-    div.row
-      .col-sm-1.slider-label 0.5
-      .col-sm-10.slider
-        div#slider
-      .col-sm-1.slider-label 30
-  div.category
-    div.row
-      div.col-sm-4.selection
-        img.button(src="food.jpg" data-categories='cafe restaurant')#foodButton
-      div.col-sm-4.selection
-        img.button(src="ent.jpg" data-categories='spa zoo movie_rental museum')#entertainmentButton
-      div.col-sm-4.selection
-        img.button(src="rec.jpg" data-categories='shopping_mall night_club')#recreationButton
+  .row
+    .col-sm-12
+      .jumbotron.option-select
+        .distance
+          label Distance in Miles:&nbsp;
+          label#distance 10.0
+          .row
+            .col-sm-1.slider-label 0.5
+            .col-sm-10
+              .slider.shor.slider-material-orange#slider
+            .col-sm-1.slider-label 30
+        .category
+          .row
+            .col-sm-4.selection
+              .genre.btn.btn-block.btn-default.btn-raised.btn-material-light-blue#foodButton(data-categories="cafe restaurant")
+                .genre-icon.icon-food
+                .genre-text Food
+            .col-sm-4.selection
+              .genre.btn.btn-block.btn-default.btn-raised.btn-material-deep-purple#entertainmentButton(data-categories="spa zoo movie_rental museum")
+                .genre-icon.icon-movie
+                .genre-text Entertainment
+            .col-sm-4.selection
+              .genre.btn.btn-block.btn-default.btn-raised.btn-material-deep-orange#recreationButton(data-categories="shopping_mall night_club")
+                .genre-icon.icon-binocular
+                .genre-text Recreation
