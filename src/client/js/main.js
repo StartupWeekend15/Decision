@@ -1,4 +1,4 @@
-/*globals define*/
+/*globals _,confirm,define*/
 // Main entry point for client side code
 'use strict';
 
@@ -56,11 +56,13 @@ define(['Client',
        'Utils',
        'shake',
        'lodash',
+       'text!../html/no_more.html',
        'text!../html/result.html'],
        function(Client,
                 Utils,
                 shake,
                 _,
+                noMoreTemplate,
                 resultTemplate) {
     // Initialize shake listening
     // TODO
@@ -98,10 +100,15 @@ define(['Client',
     // Hook up the click listeners
     // Attach click listener for each of the categories' ids
     var displayNoOption = function() {
-        // TODO
+        var $rt = $(noMoreTemplate);
+        $('.content').html($rt);
+
         console.log('No options found!');
     };
     var displayOption = function(id, option) {
+        if (!option) {
+            return displayOption();
+        }
 
         // option = option || {
         //   name: "Starbucks",
@@ -122,6 +129,12 @@ define(['Client',
         $rt.find('.result__vicinity').html('<a href="http://maps.google.com/?q=' + addressQuery + '" target="_blank">'+option.vicinity+'</a>');
 
         $('.content').html($rt);
+
+        // Set event listener
+        $('.content').on('click', '.result__retry', function(){
+            var opt = client.getAnotherOption(id);
+            displayOption(id, opt);
+        });
 
         console.log('Displaying option for', id,'(', option.name, ')');
     };
@@ -153,7 +166,7 @@ define(['Client',
       });
 
       $('#slider').on('slide', _.debounce(function (event, val) {
-        client.setDistance(+val)
+        client.setDistance(+val);
       }, 500));
 
       $('#slider').on('slide', function (event, val) {
@@ -162,19 +175,14 @@ define(['Client',
       });
 
       $('.container').on('click', '.result__restart, .logo', function(){
-        location.reload()
+        location.reload();  // FIXME Change this not to reload the whole page...
       });
 
       $('.content').on('click', '.result__accept', function(){
-        confirm('Awesome! Tweet now?');
-        location.reload();
+        //confirm('Awesome! Tweet now?');
+        location.reload();  // FIXME Change this not to reload the whole page...
       });
 
-
-      $('.content').on('click', '.result__retry', function(){
-          var opt = client.getAnotherOption(id);
-          displayOption(id, opt);
-      });
 
       setInterval(randomBoxes, 2500);
 
