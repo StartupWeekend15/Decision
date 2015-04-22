@@ -1,12 +1,19 @@
-/*globals describe,it*/
+/*globals before,describe,it*/
 
 // HTTP Request example
 var http = require('http'),
     urlencode = require('urlencode'),
-    assert = require('assert');
+    Server = require('../src/server/Server'),
+    assert = require('assert'),
+    TEST_PORT = 9342;
 
 describe('Server API tests', function() {
     'use strict';
+    before(function(done) {
+        var server = new Server({requestor: 'Test',
+                                 port: TEST_PORT});
+        server.start(done);
+    });
 
     // Helpers
     var submitRequest = function(params, cb) {
@@ -26,7 +33,7 @@ describe('Server API tests', function() {
 
             var options = {
                 host: 'localhost',
-                port: '3700',
+                port: TEST_PORT,
                 path: '/places?'+get_data,
                 method: 'GET',
                 headers: {
