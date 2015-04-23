@@ -10,7 +10,7 @@
 
 var express = require("express"),
     bodyParser = require('body-parser'),
-    google_places = require('googleplaces'),
+    GoogleRequestor = require('./GoogleRequestor'),
     TestRequestor = require('./TestRequestor'),
     R = require('ramda'),
     shuffle = require('lodash.shuffle');
@@ -37,7 +37,7 @@ Server.prototype.initializeRequestor = function(opts) {
     if (opts.requestor === 'Test') {
         this.requestor = new TestRequestor();
     } else {
-        this.requestor = new google_places(opts.apiKey, 'json');
+        this.requestor = new GoogleRequestor(opts);
     }
 };
 
