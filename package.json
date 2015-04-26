@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node src/server/app.js",
-    "start-dev": "nodemon src/server/app.js",
+    "start-dev": "NODE_ENV=development nodemon src/server/app.js",
     "test": "node node_modules/mocha/bin/mocha --recursive test/"
   },
   "repository": {
@@ -23,10 +23,13 @@
   "homepage": "https://github.com/StartupWeekend15/Decision",
   "dependencies": {
     "body-parser": "^1.12.2",
+    "dotenv": "^1.1.0",
     "express": "^4.12.3",
     "googleplaces": "^0.4.1",
     "jade": "^1.9.2",
+    "lodash.shuffle": "~3.0.0",
     "mocha": "^2.2.4",
+    "ramda": "^0.13.0",
     "requirejs": "^2.1.17",
     "urlencode": "^1.0.0"
   },

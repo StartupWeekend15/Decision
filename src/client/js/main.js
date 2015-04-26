@@ -1,4 +1,4 @@
-/*globals define*/
+/*globals _,confirm,define*/
 // Main entry point for client side code
 'use strict';
 
@@ -56,16 +56,19 @@ define(['Client',
        'Utils',
        'shake',
        'lodash',
+       'text!../html/no_more.html',
        'text!../html/result.html'],
        function(Client,
                 Utils,
                 shake,
                 _,
+                noMoreTemplate,
                 resultTemplate) {
     // Initialize shake listening
     // TODO
 
     // This really should be refactored and put in Utils
+    var currentId = null;
     var getCategoryMap = function() {
         var buttons = $('.genre'),
             categories = {};
@@ -82,6 +85,7 @@ define(['Client',
 
     var categories = getCategoryMap(),
         client = new Client(categories);
+
     var updatePosition = function(pos) {
         // Check for a certain amount of movement?
         console.log('Updating position', pos.coords);
@@ -98,12 +102,17 @@ define(['Client',
     // Hook up the click listeners
     // Attach click listener for each of the categories' ids
     var displayNoOption = function() {
-        // TODO
+        var $rt = $(noMoreTemplate);
+        $('.content').html($rt);
+
         console.log('No options found!');
         // alert('No more new options for you. You can restart!');
         // location.reload();
     };
     var displayOption = function(id, option) {
+        if (!option) {
+            return displayNoOption();
+        }
 
         if (option === null) {
             console.log("Shouldn't be called with null option");
@@ -132,12 +141,9 @@ define(['Client',
     };
 
     var onOptionClicked = function(id) {
+        currentId = id;
         client.getOption(id, function(result) {
-            if (result) {
-                displayOption(id, result);
-            } else {  // No options
-                displayNoOption();
-            }
+            displayOption(id, result);
         });
     };
 
@@ -158,7 +164,7 @@ define(['Client',
       });
 
       $('#slider').on('slide', _.debounce(function (event, val) {
-        client.setDistance(+val)
+        client.setDistance(+val);
       }, 500));
 
       $('#slider').on('slide', function (event, val) {
@@ -167,22 +173,18 @@ define(['Client',
       });
 
       $('.container').on('click', '.result__restart, .logo', function(){
-        location.reload()
+        location.reload();  // FIXME Change this not to reload the whole page...
       });
 
       $('.content').on('click', '.result__accept', function(){
-        confirm('Awesome! Tweet now?');
-        location.reload();
+        //confirm('Awesome! Tweet now?');
+        location.reload();  // FIXME Change this not to reload the whole page...
       });
 
-
+      // Set event listener
       $('.content').on('click', '.result__retry', function(){
-          var opt = client.getAnotherOption(id);
-          if (opt === null) {
-            displayNoOption();
-          } else {
-              displayOption(id, opt);
-          }
+        var opt = client.getAnotherOption(currentId);
+        displayOption(currentId, opt);
       });
 
       setInterval(randomBoxes, 2500);
