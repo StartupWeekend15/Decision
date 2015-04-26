@@ -2,5 +2,9 @@ language: node_js
 node_js:
 - '0.12'
 - '0.11'
-install: 
-    - npm install
+install:
+- npm install
+deploy:
+  provider: heroku
+  api_key:
+    secure: YWv+Rgxo7gC6pwLyFCLt+x/CpdQ02KIh+Y4JgkTMU/DozeteFADHWaIeWlT2sU/1z3+HRHdyTych0gliSmsctGQSGIxepxmJ285X5OoM5fYtxRCk+CZx/9PmjVKtG5s1jbUKDV/kdtbAZPv2GS00UlQO4jKI1bLelK3YcCoXrYM=
