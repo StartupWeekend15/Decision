@@ -114,7 +114,7 @@ Server.prototype.cachePlaces = function(params, value) {
 Server.prototype.getPlaces = function(params, callback) {
     this.getPlacesFromCache(params, function(cachedValue) {
         if (cachedValue) {
-            callback(cachedValue.slice());
+          callback(cachedValue.slice());
         } else {
           this.requestor.request(params, function (error, response) {
               if (error) {
