@@ -21,10 +21,10 @@ function randomBoxes() {
   $('.genre-icon.icon-food').addClass(_.sample(foodIcons));
 
   removeClasses($('#entertainmentButton .genre-icon'));
-  $('.genre-icon.icon-food').addClass(_.sample(entIcons));
+  $('.genre-icon.icon-movie').addClass(_.sample(entIcons));
 
   removeClasses($('#recreationButton .genre-icon'));
-  $('.genre-icon.icon-food').addClass(_.sample(recIcons));
+  $('.genre-icon.icon-binocular').addClass(_.sample(recIcons));
 
   function removeClasses($el) {
     var classes = materialPallate.concat(foodIcons, entIcons, recIcons);
