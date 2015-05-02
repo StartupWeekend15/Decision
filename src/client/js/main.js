@@ -1,4 +1,4 @@
-/*globals _,confirm,define*/
+/*globals alert,_,confirm,define*/
 // Main entry point for client side code
 'use strict';
 
@@ -60,12 +60,24 @@ define(['Client',
        'text!../html/result.html'],
        function(Client,
                 Utils,
-                shake,
+                Shake,
                 _,
                 noMoreTemplate,
                 resultTemplate) {
+
     // Initialize shake listening
-    // TODO
+    var myShakeEvent = new Shake({
+        threshold: 15, // optional shake strength threshold
+        timeout: 1000 // optional, determines the frequency of event generation
+    });
+    myShakeEvent.start();
+    window.addEventListener('shake', shakeEventDidOccur, false);
+
+    // function to call when shake occurs
+    function shakeEventDidOccur () {
+        // TODO: Check if the user is viewing an option
+        alert('shake!');
+    }
 
     // This really should be refactored and put in Utils
     var currentId = null;
