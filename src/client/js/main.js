@@ -4,38 +4,6 @@
 
 $.material.init();
 
-function randomBoxes() {
-  var materialPallate = ['red', 'pink', 'purple', 'deep-purple', 'indigo', 'light-blue', 'cyan', 'teal', 'light-green', 'lime', 'orange', 'deep-orange', 'blue-grey', 'brown'];
-  var colors = _(materialPallate).sample(3).shuffle().value();
-
-  var foodIcons = ['icon-food', 'icon-drink', 'icon-cup', 'icon-drink2', 'icon-mug'];
-  var entIcons = ['icon-movie', 'icon-music', 'icon-headphone', 'icon-gamepad'];
-  var recIcons = ['icon-binocular', 'icon-sunny', 'icon-tree2', 'icon-leaf', 'icon-flower'];
-
-  $('.genre').each(function (i, box) {
-    removeClasses($(box));
-    $(box).addClass('btn-material-' + colors[i]);
-  });
-
-  removeClasses($('#foodButton .genre-icon'));
-  $('.genre-icon.icon-food').addClass(_.sample(foodIcons));
-
-  removeClasses($('#entertainmentButton .genre-icon'));
-  $('.genre-icon.icon-movie').addClass(_.sample(entIcons));
-
-  removeClasses($('#recreationButton .genre-icon'));
-  $('.genre-icon.icon-binocular').addClass(_.sample(recIcons));
-
-  function removeClasses($el) {
-    var classes = materialPallate.concat(foodIcons, entIcons, recIcons);
-    _.forEach(materialPallate, function(clr) {
-      $el.removeClass('btn-material-' + clr);
-    });
-  }
-}
-
-
-
 // Set up require
 require.config({
     paths: {
@@ -177,8 +145,6 @@ define(['Client',
         var opt = client.getAnotherOption(currentId);
         displayOption(currentId, opt);
       });
-
-      setInterval(randomBoxes, 2500);
 
     });
 

@@ -5,15 +5,9 @@ block content
       .jumbotron.option-select
         .category
           .row
-            .col-sm-4.selection
-              .genre.btn.btn-block.btn-default.btn-raised.btn-material-light-blue#foodButton(data-categories="cafe restaurant food")
-                .genre-icon.icon-food
-                .genre-text Food
-            .col-sm-4.selection
-              .genre.btn.btn-block.btn-default.btn-raised.btn-material-deep-purple#entertainmentButton(data-categories="movie_rental movie_theater art_gallery stadium zoo")
-                .genre-icon.icon-movie
-                .genre-text Entertainment
-            .col-sm-4.selection
-              .genre.btn.btn-block.btn-default.btn-raised.btn-material-deep-orange#recreationButton(data-categories="casino shopping_mall amusement_park campground park night_club")
-                .genre-icon.icon-binocular
-                .genre-text Recreation
+              .genre#foodButton(data-categories="cafe restaurant food")
+                img.logo(src="food.png")
+              .genre#entertainmentButton(data-categories="movie_rental movie_theater art_gallery stadium zoo")
+                img.logo(src="fun.png")
+              .genre#recreationButton(data-categories="casino shopping_mall amusement_park campground park night_club")
+                img.logo(src="flicks.png")
