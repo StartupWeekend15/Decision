@@ -6,146 +6,139 @@ $.material.init();
 
 // Set up require
 require.config({
-    paths: {
-        shake: './lib/shake',
-        dot: './lib/doT.min',
-        lodash: './lib/lodash.min',
-        async: './lib/async'
-    },
-    map: {
-        '*': {
-            'text': './lib/require-text/text'
-        }
+  paths: {
+    shake: './lib/shake',
+    dot: './lib/doT.min',
+    lodash: './lib/lodash.min',
+    async: './lib/async'
+  },
+  map: {
+    '*': {
+      'text': './lib/require-text/text'
     }
+  }
 });
 
+define([ 'Client'
+       , 'Utils'
+       , 'shake'
+       , 'lodash'
+       , 'text!../html/no_more.html'
+       , 'text!../html/result.html'
+       ],
+function(Client, Utils, shake, _, noMoreTemplate, resultTemplate) {
 
-define(['Client',
-       'Utils',
-       'shake',
-       'lodash',
-       'text!../html/no_more.html',
-       'text!../html/result.html'],
-       function(Client,
-                Utils,
-                shake,
-                _,
-                noMoreTemplate,
-                resultTemplate) {
-    // Initialize shake listening
-    // TODO
+  // Initialize shake listening
+  // TODO
 
-    // This really should be refactored and put in Utils
-    var currentId = null;
-    var getCategoryMap = function() {
-        var buttons = $('.genre'),
-            categories = {};
+  // This really should be refactored and put in Utils
+  var currentId = null;
+  var getCategoryMap = function() {
+      var buttons = $('.genre'),
+          categories = {};
 
-        for (var i = buttons.length; i--;) {
-            categories[buttons[i].getAttribute('id')] = buttons[i].getAttribute('data-categories')
-                // Get array of the categories
-                .split(' ')
-                // Remove '' from categories
-                .filter(Utils.isNonEmptyString);
-        }
-        return categories;
-    };
+      for (var i = buttons.length; i--;) {
+          categories[buttons[i].getAttribute('id')] = buttons[i].getAttribute('data-categories')
+              // Get array of the categories
+              .split(' ')
+              // Remove '' from categories
+              .filter(Utils.isNonEmptyString);
+      }
+      return categories;
+  };
 
-    var categories = getCategoryMap(),
-        client = new Client(categories);
+  var categories = getCategoryMap(),
+      client = new Client(categories);
 
-    var updatePosition = function(pos) {
-        // Check for a certain amount of movement?
-        console.log('Updating position', pos.coords);
-        client.setLocation(pos.coords.latitude, pos.coords.longitude);
-    };
-    // Check for navigator and stuff
-    if (navigator.geolocation) {
-        // Update positions
-        navigator.geolocation.getCurrentPosition(updatePosition);
-    } else {
-        console.error('Geolocation not supported by this browser');
-    }
+  // get location by ip (faster than browser)
+  geolocator.locateByIP(function(location) {
+    updateLocation('coords by IP', location.coords);
+    var html5Options = { enableHighAccuracy: true, timeout: 6000, maximumAge: 0 };
+    // get more accurate location from the browser 
+    geolocator.locate(function(location) {
+      updateLocation('coords', location.coords);
+    }, function(error) {
+      console.log(error);
+    }, false, html5Options);
+  }, function(error) {
+    console.log(error);
+  }, 2);
 
-    // Hook up the click listeners
-    // Attach click listener for each of the categories' ids
-    var displayNoOption = function() {
-        var $rt = $(noMoreTemplate);
-        $('.content').html($rt);
+  function updateLocation(src, coords) {
+    console.info(src, coords.latitude, coords.longitude);
+    client.setLocation(coords.latitude, coords.longitude);
+  }
+  
+  // Hook up the click listeners
+  // Attach click listener for each of the categories' ids
+  var displayNoOption = function() {
+      var $rt = $(noMoreTemplate);
+      $('.content').html($rt);
 
-        console.log('No options found!');
-        // alert('No more new options for you. You can restart!');
-        // location.reload();
-    };
-    var displayOption = function(id, option) {
-        if (!option) {
-            return displayNoOption();
-        }
+      console.log('No options found!');
+      // alert('No more new options for you. You can restart!');
+      // location.reload();
+  };
+  var displayOption = function(id, option) {
+      if (!option) {
+          return displayNoOption();
+      }
 
-        if (option === null) {
-            console.log("Shouldn't be called with null option");
-            option = option || {
-              name: "Starbucks",
-              icon: "http://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
-              rating: 4,
-              vicinity: "402 21st Avenue South, Nashville",
-              opening_hours: {open_now: true, weekday_text: []},
-              price_level:2
-            };
-        }
+      if (option === null) {
+          console.log("Shouldn't be called with null option");
+          option = option || {
+            name: "Starbucks",
+            icon: "http://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
+            rating: 4,
+            vicinity: "402 21st Avenue South, Nashville",
+            opening_hours: {open_now: true, weekday_text: []},
+            price_level:2
+          };
+      }
 
-        var addressQuery = option.vicinity.split(' ').join('+');
+      var addressQuery = option.vicinity.split(' ').join('+');
 
-        var $rt = $(resultTemplate);
-        $rt.find('.result__name').html(option.name);
-        $rt.find('.result__hours').html('9:00 AM - 5:00 PM');
-        $rt.find('.result__phone').html('(555) 555-5555');
-        $rt.find('.result__photo').html('<img src="' + option.icon + '">');
-        $rt.find('.result__vicinity').html('<a href="http://maps.google.com/?q=' + addressQuery + '" target="_blank">'+option.vicinity+'</a>');
+      var $rt = $(resultTemplate);
+      $rt.find('.result__name').html(option.name);
+      $rt.find('.result__hours').html('9:00 AM - 5:00 PM');
+      $rt.find('.result__phone').html('(555) 555-5555');
+      $rt.find('.result__photo').html('<img src="' + option.icon + '">');
+      $rt.find('.result__vicinity').html('<a href="http://maps.google.com/?q=' + addressQuery + '" target="_blank">'+option.vicinity+'</a>');
 
-        $('.content').html($rt);
+      $('.content').html($rt);
 
-        console.log('Displaying option for', id,'(', option.name, ')');
-    };
+      console.log('Displaying option for', id,'(', option.name, ')');
+  };
 
-    var onOptionClicked = function(id) {
-        currentId = id;
-        client.getOption(id, function(result) {
-            displayOption(id, result);
-        });
-    };
-
-    for (var id in categories) {
-        document.getElementById(id).onclick = onOptionClicked.bind(null, id);
-    }
-
-    // Manipulating the UI
-    $(function() {
-
-      $('#slider').on('slide', _.debounce(function (event, val) {
-        client.setDistance(+val);
-      }, 500));
-
-      $('#slider').on('slide', function (event, val) {
-        var distance = val.slice(0, -1);
-        $('#distance').html(val.slice(0, -1));
+  var onOptionClicked = function(id) {
+      currentId = id;
+      client.getOption(id, function(result) {
+          displayOption(id, result);
       });
+  };
 
-      $('.container').on('click', '.result__restart, .logo', function(){
-        location.reload();  // FIXME Change this not to reload the whole page...
-      });
+  for (var id in categories) {
+      document.getElementById(id).onclick = onOptionClicked.bind(null, id);
+  }
 
-      $('.content').on('click', '.result__accept', function(){
-        //confirm('Awesome! Tweet now?');
-        location.reload();  // FIXME Change this not to reload the whole page...
-      });
+  // Manipulating the UI
+  $(function() {
 
-      // Set event listener
-      $('.content').on('click', '.result__retry', function(){
-        var opt = client.getAnotherOption(currentId);
-        displayOption(currentId, opt);
-      });
-
+    $('.container').on('click', '.result__restart, .logo', function(){
+      location.reload();  // FIXME Change this not to reload the whole page...
     });
+
+    $('.content').on('click', '.result__accept', function(){
+      //confirm('Awesome! Tweet now?');
+      location.reload();  // FIXME Change this not to reload the whole page...
+    });
+
+    // Set event listener
+    $('.content').on('click', '.result__retry', function(){
+      var opt = client.getAnotherOption(currentId);
+      displayOption(currentId, opt);
+    });
+
+  });
 
 });
