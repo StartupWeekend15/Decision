@@ -7,7 +7,6 @@ Don't be a headless chicken!
 ### How to run
 
 * `npm install`
-* `bower install`
 * Copy .env file to the root directory of the project
 * Run
   `npm start`
