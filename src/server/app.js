@@ -10,7 +10,7 @@ opts = {
     requestor: process.env.NODE_ENV === 'development'? 
                'Test' :
                'Google',
-    port: this._port = process.env.PORT || 3700,
+    port: this._port = process.env.PORT || 80,
     apiKey: process.env.GOOGLE_PLACES_API_KEY 
 };
 
