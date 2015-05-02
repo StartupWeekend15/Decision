@@ -13,7 +13,8 @@ var express = require("express"),
     GoogleRequestor = require('./GoogleRequestor'),
     TestRequestor = require('./TestRequestor'),
     R = require('ramda'),
-    shuffle = require('lodash.shuffle');
+    shuffle = require('lodash.shuffle'),
+    Utils = require('./Utils');
 
 var Server = function(opts) {
     this._cache = {};
@@ -125,6 +126,7 @@ Server.prototype.getPlaces = function(params, callback) {
               }
 
               var results = response.results.map(this.convertResult);
+              results = Utils.filterClosed(results);
               
               this.cachePlaces(params, results);
               callback(results);

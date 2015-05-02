@@ -90,7 +90,7 @@ describe('Server API tests', function() {
         });
     });
 
-    it('Should filter out places that are not currently open', function(done){
+    it('Should only return places that currently open', function(done){
         submitRequest({zip:'37203',
                        dist:1000,
                        cat:['restaurant'],
@@ -100,11 +100,17 @@ describe('Server API tests', function() {
             var all_open = true;
             for (var i = chunk.length - 1; i >= 0; i--) {
                 var hours = chunk[i]['opening_hours'];
-                if (hours.hasOwnProperty('open_now') && !hours['open_now'])
-                    all_open = false;
+                if (hours) {
+                    if (hours.hasOwnProperty('open_now') && !hours['open_now']){
+                        all_open = false;
+                        break;
+                    }
+                }
             }
             assert(all_open, "Found a place that is closed")
             done();
         });
     });
+
 });
+
