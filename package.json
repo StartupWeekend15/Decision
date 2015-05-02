@@ -9,7 +9,8 @@
   "scripts": {
     "start": "node src/server/app.js",
     "start-dev": "NODE_ENV=development node node_modules/nodemon/bin/nodemon.js src/server/app.js",
-    "test": "node node_modules/mocha/bin/mocha --recursive test/"
+    "test": "node node_modules/mocha/bin/mocha --recursive test/",
+    "testmon": "node_modules/nodemon/bin/nodemon.js node_modules/mocha/bin/mocha --recursive test/"
   },
   "repository": {
     "type": "git",
