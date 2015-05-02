@@ -1,13 +1,9 @@
 extends ./layout.jade
 block content
-  .row
-    .col-sm-12
-      .jumbotron.option-select
-        .category
-          .row
-              .genre#foodButton(data-categories="cafe restaurant food")
-                img.logo(src="food.png")
-              .genre#entertainmentButton(data-categories="movie_rental movie_theater art_gallery stadium zoo")
-                img.logo(src="fun.png")
-              .genre#recreationButton(data-categories="casino shopping_mall amusement_park campground park night_club")
-                img.logo(src="flicks.png")
+  .jumbotron
+    .genre#foodButton(data-categories="cafe restaurant food")
+      img(src="food.png")
+    .genre#entertainmentButton(data-categories="movie_rental movie_theater art_gallery stadium zoo")
+      img(src="fun.png")
+    .genre#recreationButton(data-categories="casino shopping_mall amusement_park campground park night_club")
+      img(src="flicks.png")

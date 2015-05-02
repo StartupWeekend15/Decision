@@ -1,10 +1,15 @@
-.category {
-  margin-top: 20px;
+.genre {
+  padding: 10px 30px;
 }
 
-.slider-label {
-  padding-left: 1px;
-  padding-right: 1px;
+.genre img {
+  width: 70%;
+  cursor: pointer;
+  cursor: hand;
+}
+
+.category {
+  margin-top: 20px;
 }
 
 .logo {
