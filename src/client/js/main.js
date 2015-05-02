@@ -154,15 +154,6 @@ define(['Client',
     // Manipulating the UI
     $(function() {
 
-      $("#slider").noUiSlider({
-        start: 10,
-        step: 0.5,
-        range: {
-          min: 0.5,
-          max: 30
-        }
-      });
-
       $('#slider').on('slide', _.debounce(function (event, val) {
         client.setDistance(+val);
       }, 500));

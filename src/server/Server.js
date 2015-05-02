@@ -58,6 +58,9 @@ Server.prototype.initializeApp = function() {
     // images
     this._app.use(express.static(__dirname + '/../client/img'));
 
+    // bower_components
+    this._app.use('/bower_components',  express.static(__dirname + '/../../bower_components'));
+
     this._app.get('/', function(req, res){
         res.render('index');
     });
