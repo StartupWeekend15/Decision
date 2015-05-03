@@ -158,10 +158,17 @@ Server.prototype.getPlaces = function(params, callback) {
  * @return {undefined}
  */
 Server.prototype.convertResult = function(result) {
-    var fields = ['place_id', 'name', 'icon', 'vicinity', 'types', 'geometry', 'formatted_phone_number', 'rating', 'price_level', 'website'];
+    var fields = ['place_id', 'photos', 'name', 'icon', 'vicinity', 'types', 'geometry', 'formatted_phone_number', 'rating', 'price_level', 'website'];
     var json_result = R.pick(fields, result);
+    
     json_result['location'] = json_result['geometry']['location'];
-    delete json_result.geometry;
+    var type = json_result['types'][0];
+    try {
+        type = path.basename(json_result['icon'].split('-')[0])
+    } catch(error) { console.log("parsing icon didn't work", json_result['icon']); }
+    json_result['type'] = type.charAt(0).toUpperCase() + type.substr(1);
+    delete json_result['types'];
+    delete json_result['geometry'];
     return json_result;
 };
 

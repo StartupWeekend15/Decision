@@ -103,16 +103,30 @@ function(Client, Utils, shake, _, noMoreTemplate, resultTemplate) {
         console.log(option);
       var price_string = '';
       for (var i=0; i<option.price_level; i++) {
-          price_string += '$';
+        price_string += '$';
       }
+      var rating_string = '';
+      while (option.rating >= 0.5) {
+        if (option.rating >= 1) {
+            rating_string += '<img src="star_full.png">';
+            option.rating -= 1;
+            continue;
+        }
+        if (option.rating >= 0.5) {
+            rating_string += '<img src="star_half.png">';
+            option.rating -= 0.5;
+        }
+      }
+      
+      console.log('option');
+      console.log(option);
 
       var $rt = $(resultTemplate);
       $rt.find('.result__name').html(option.name);
-      $rt.find('.result__phone').html(option.formatted_phone_number);
       $rt.find('.result__photo').html('<img src="' + option.icon + '">');
+      $rt.find('.result__type').html(option.type);
       $rt.find('.result__price').html(price_string);
-      $rt.find('.result__ratings').html(option.rating);
-      $rt.find('.result__website').html('<a href="' + option.url + '" target="_blank">' + option.url + '</a>');
+      $rt.find('.result__ratings').html(rating_string);
       $rt.find('.result__vicinity').html('<a href="http://maps.google.com/?q=' + addressQuery + '" target="_blank">'+option.vicinity+'</a>');
 
       $('.content').html($rt);
