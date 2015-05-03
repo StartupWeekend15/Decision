@@ -69,10 +69,11 @@ Server.prototype.initializeApp = function() {
         console.log("The catagories received: ",cats);
         var parameters = {
             location:[req.query.lat, req.query.lng],
-            types:[req.query.cat.toString().replace(/;/g,',')],
+            types:req.query.cat.toString().replace(/;/g,',').split(','),
             radius:req.query.dist
         };    
 
+        console.log('params:', parameters);
         this.getPlaces(parameters, function(results) {
 
             num = Math.min(results.length,num);
@@ -106,8 +107,8 @@ Server.prototype.splitCats = function(cats){
 
 
 Server.prototype.splitPlaces = function(results,cats,num){
-    var res = [];
-    console.log("cats: ", cats);
+    var res = {};
+
     for(var i=0; i<cats.length;++i){
         var tmp = [];
         for(var j=0; j<results.length; ++j){
@@ -120,9 +121,13 @@ Server.prototype.splitPlaces = function(results,cats,num){
         }
         tmp = tmp.splice(0,num);
 
+        console.log('CATS:', cats[i]);
         console.log("Array size: ",tmp.length);
-        res.push(tmp);
+        // Add it to a map
+        res[cats[i]] = tmp;
     }  
+
+    console.log('RESPONSE:', res);
 
     // results = results.splice(0,num);
     return res;
