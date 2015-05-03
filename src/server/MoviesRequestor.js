@@ -55,7 +55,7 @@ MoviesRequestor.prototype.fetchMovies = function(done) {
         }
     });
 
-    this.getRssFile(done, feedparser)
+    this.getRssFile(feedparser, done)
 };
 
 module.exports = MoviesRequestor;

@@ -24,9 +24,13 @@ var latlng2zip = function(lat,lng){
    return  gps.gps2zip(lat,lng);
 };
 
+var getAttribute = function(attr, obj){
+    return obj[attr];
+};
 
 module.exports = {
     filterClosed: filterClosed,
+    getAttribute: getAttribute,
     latlng2zip: latlng2zip
 };
 

@@ -11,6 +11,7 @@
 var express = require("express"),
     bodyParser = require('body-parser'),
     GoogleRequestor = require('./GoogleRequestor'),
+    MoviesRequestor = require('./MoviesRequestor'),
     TestRequestor = require('./TestRequestor'),
     R = require('ramda'),
     shuffle = require('lodash.shuffle'),
@@ -22,6 +23,7 @@ var Server = function(opts) {
     // Set up the requestor
     this.requestor = null;
     this.initializeRequestor(opts);
+    this.moviesRequestor = new MoviesRequestor();  // Set the zip code
 
     this._port = opts.port;
     this._app = express();
@@ -70,17 +72,44 @@ Server.prototype.initializeApp = function() {
         var num = req.query.num;
 
         var parameters = {
-            location:[req.query.lat, req.query.lng],
-            types:req.query.cat,
-            radius:req.query.dist
+            location: [req.query.lat, req.query.lng],
+            types: req.query.cat,
+            radius: req.query.dist
         };    
 
-        this.getPlaces(parameters, function(results) {
-            num = Math.min(results.length,num);
-            results = shuffle(results);
-            results = results.splice(0,num);
-            res.send(JSON.stringify(results));  
-        });
+        // Check for movies requested
+        console.log('Requested types:', parameters.types);
+        var requestingMovies = R.contains('movies')(parameters.types);
+        if (requestingMovies) {
+            console.log('requesting movies');
+            var zip = Utils.latlng2zip.apply(null, parameters.location);
+            this.moviesRequestor._zip_code = zip.zip_code;
+            console.log('zip code is:', zip);
+            this.moviesRequestor.fetchMovies(function(err, info) {
+                // Clean the movie info
+                var movies = info.map(Utils.getAttribute.bind(null, 'items'));
+                movies = R.flatten(movies);
+
+                console.log('Received movies:', movies);
+
+                // Get the places
+                this.getPlaces(parameters, function(results) {
+                    num = Math.min(results.length,num);
+                    results = shuffle(results);
+                    results = results.splice(0,num);
+                    res.send(JSON.stringify(results));  
+                });
+
+            }.bind(this));
+        } else {
+            this.getPlaces(parameters, function(results) {
+                num = Math.min(results.length,num);
+                results = shuffle(results);
+                results = results.splice(0,num);
+                res.send(JSON.stringify(results));  
+            });
+
+        }
 
     }.bind(this));
 
