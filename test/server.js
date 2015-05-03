@@ -78,7 +78,7 @@ describe('Server API tests', function() {
         });
     });
 
-    it.only('Should accept arrays of lists of catagories', function(done){
+    it('Should accept arrays of lists of catagories', function(done){
         submitRequest({lat:36.15768,
                        lng:-86.764677,
                        dist:100,
@@ -112,7 +112,7 @@ describe('Server API tests', function() {
 
     });
 
-    it.only('Should accept arrays of lists of catagories', function(done){
+    it('Should accept arrays of lists of catagories', function(done){
         submitRequest({lat:36.15768,
                       lng:-86.764677,
                       dist:100,
