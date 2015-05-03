@@ -209,9 +209,14 @@ Server.prototype.convertResult = function(result) {
     var type = json_result.types[0];
     try {
         type = path.basename(json_result.icon.split('-')[0]);
+        var words = type.split('_');
+        type = '';
+        for (var i=0; i<words.length; i++) {
+            words[i] = words[i].charAt(0).toUpperCase() + words[i].substr(1) + ' ';
+        }
+        type = words.join(' ');
     } catch(error) { console.log("parsing icon didn't work", json_result.icon); }
-    json_result.type = type.charAt(0).toUpperCase() + type.substr(1);
-    delete json_result.types;
+    json_result.type = type;
     delete json_result.geometry;
     return json_result;
 };
