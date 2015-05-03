@@ -34,7 +34,8 @@
     "ramda": "^0.13.0",
     "requirejs": "^2.1.17",
     "urlencode": "^1.0.0",
-    "feedparser": "~1.0.1"
+    "feedparser": "~1.0.1",
+    "xmldom": "~0.1.19"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
