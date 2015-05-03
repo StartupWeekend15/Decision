@@ -14,7 +14,8 @@ var express = require("express"),
     TestRequestor = require('./TestRequestor'),
     R = require('ramda'),
     shuffle = require('lodash.shuffle'),
-    Utils = require('./Utils');
+    Utils = require('./Utils'),
+    array = require('array-extended');
 
 var Server = function(opts) {
     this._cache = {};
@@ -68,19 +69,23 @@ Server.prototype.initializeApp = function() {
 
     this._app.get('/places', function (req, res) {
         var num = req.query.num;
-
+        var cats = this.splitCats(req.query.cat.toString());
+        console.log("The catagories received: ",cats);
         var parameters = {
             location:[req.query.lat, req.query.lng],
-            types:req.query.cat,
+            types:req.query.cat.toString().replace(/;/g,',').split(','),
             radius:req.query.dist
         };    
 
+        console.log('params:', parameters);
         this.getPlaces(parameters, function(results) {
+
             num = Math.min(results.length,num);
             results = shuffle(results);
-            results = results.splice(0,num);
+            results = this.splitPlaces(results,cats,num);
+            //results = [];
             res.send(JSON.stringify(results));  
-        });
+        }.bind(this));
 
     }.bind(this));
 
@@ -91,6 +96,45 @@ var initIfNeeded = function(obj, key) {
     if (obj[key] === undefined) {
         obj[key] = {};
     }
+};
+
+
+Server.prototype.splitCats = function(cats){
+    var res = cats.split(',');
+    //console.log("The split categories: ",res);
+    var cat =  res.map(function(item){
+        return item.replace(/;/g,',');
+    });
+    //console.log("Categories: ",cat); 
+    return cat; 
+};
+
+
+Server.prototype.splitPlaces = function(results,cats,num){
+    var res = {};
+
+    for(var i=0; i<cats.length;++i){
+        var tmp = [];
+        for(var j=0; j<results.length; ++j){
+            var temp = cats[i].split(',');
+            // If length of intersections is non-zero, throw them in
+            var intersect = array.intersect(results[j].types,temp);
+            if(intersect.length>0){
+                tmp.push(results[j]);
+            }
+        }
+        tmp = tmp.splice(0,num);
+
+        console.log('CATS:', cats[i]);
+        console.log("Array size: ",tmp.length);
+        // Add it to a map
+        res[cats[i]] = tmp;
+    }  
+
+    console.log('RESPONSE:', res);
+
+    // results = results.splice(0,num);
+    return res;
 };
 
 Server.prototype.getPlacesFromCache = function(params, callback) {
@@ -160,7 +204,7 @@ Server.prototype.getPlaces = function(params, callback) {
 Server.prototype.convertResult = function(result) {
     var fields = ['place_id', 'name', 'icon', 'vicinity', 'types', 'geometry', 'formatted_phone_number', 'rating', 'price_level', 'website'];
     var json_result = R.pick(fields, result);
-    json_result['location'] = json_result['geometry']['location'];
+    json_result.location = json_result.geometry.location;
     delete json_result.geometry;
     return json_result;
 };
