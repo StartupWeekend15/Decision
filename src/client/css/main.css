@@ -60,6 +60,8 @@
 
 .result__retry{
   width: 100%;
+  cursor: pointer;
+  cursor: hand;
 }
 
 .result__restart{
