@@ -134,16 +134,16 @@ define(['Utils', 'lodash'], function(Utils, _) {
         var id,
             res = JSON.parse(request.responseText);
 
-            console.log('inverseCatMap:', this.inverseCategoryMap);
+        console.log('inverseCatMap:', this.inverseCategoryMap);
         _.forIn(res, function(value, key) {
+            // Record the new options
             id = this.inverseCategoryMap[key];
-            console.log('\nkey is', key);
-            console.log('value is', value);
-            console.log('id is', id);
             this.options[id] = value;
         }.bind(this));
 
-        callback();
+        if (callback) {
+            callback();
+        }
     };
 
     /**
@@ -155,8 +155,13 @@ define(['Utils', 'lodash'], function(Utils, _) {
     Client.prototype.getOption = function(id, cb) {
         var fn = function() {
             console.log('Getting option for', id);
+            if (!this.remainingOptions[id]) {  // First click
+                // Request more options for this option id
+                this._requestOptions([id], 10, function() {
+                    this.remainingOptions[id] = this.options[id].slice();
+                }.bind(this));
+            }
             this.remainingOptions[id] = this.options[id].slice();
-            console.log('there', this.remainingOptions[id]);
             return cb(this._getOption(id));
         }.bind(this);
         if (!this.lat) {
