@@ -13,7 +13,8 @@ var express = require("express"),
     GoogleRequestor = require('./GoogleRequestor'),
     TestRequestor = require('./TestRequestor'),
     R = require('ramda'),
-    shuffle = require('lodash.shuffle');
+    shuffle = require('lodash.shuffle'),
+    array = require('array-extended');
 
 var Server = function(opts) {
     this._cache = {};
@@ -64,19 +65,22 @@ Server.prototype.initializeApp = function() {
 
     this._app.get('/places', function (req, res) {
         var num = req.query.num;
-
+        var cats = this.splitCats(req.query.cat.toString());
+        console.log("The catagories received: ",cats);
         var parameters = {
             location:[req.query.lat, req.query.lng],
-            types:req.query.cat,
+            types:[req.query.cat.toString().replace(/;/g,',')],
             radius:req.query.dist
         };    
 
         this.getPlaces(parameters, function(results) {
+
             num = Math.min(results.length,num);
             results = shuffle(results);
-            results = results.splice(0,num);
+            results = this.splitPlaces(results,cats,num);
+            //results = [];
             res.send(JSON.stringify(results));  
-        });
+        }.bind(this));
 
     }.bind(this));
 
@@ -87,6 +91,41 @@ var initIfNeeded = function(obj, key) {
     if (obj[key] === undefined) {
         obj[key] = {};
     }
+};
+
+
+Server.prototype.splitCats = function(cats){
+    var res = cats.split(',');
+    //console.log("The split categories: ",res);
+    var cat =  res.map(function(item){
+        return item.replace(/;/g,',');
+    });
+    //console.log("Categories: ",cat); 
+    return cat; 
+};
+
+
+Server.prototype.splitPlaces = function(results,cats,num){
+    var res = [];
+    console.log("cats: ", cats);
+    for(var i=0; i<cats.length;++i){
+        var tmp = [];
+        for(var j=0; j<results.length; ++j){
+            var temp = cats[i].split(',');
+            // If length of intersections is non-zero, throw them in
+            var intersect = array.intersect(results[j].types,temp);
+            if(intersect.length>0){
+                tmp.push(results[j]);
+            }
+        }
+        tmp = tmp.splice(0,num);
+
+        console.log("Array size: ",tmp.length);
+        res.push(tmp);
+    }  
+
+    // results = results.splice(0,num);
+    return res;
 };
 
 Server.prototype.getPlacesFromCache = function(params, callback) {
@@ -122,7 +161,7 @@ Server.prototype.getPlaces = function(params, callback) {
               }
 
               var results = response.results.map(this.convertResult);
-              
+
               this.cachePlaces(params, results);
               callback(results);
           }.bind(this));
@@ -137,7 +176,7 @@ Server.prototype.getPlaces = function(params, callback) {
  * @return {undefined}
  */
 Server.prototype.convertResult = function(result) {
-    var fields = ['name', 'icon', 'rating', 'vicinity', 'opening_hours', 'price_level'];
+    var fields = ['name', 'icon', 'rating', 'vicinity', 'opening_hours', 'price_level', 'types'];
     return R.pick(fields, result);
 };
 

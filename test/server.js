@@ -30,7 +30,7 @@ describe('Server API tests', function() {
                 get_data = 'zip='+params.zip;
             }
             get_data += '&dist='+ params.dist+cat+'&num='+params.num;
-
+            console.log("get_data: ", get_data);
             var options = {
                 host: 'localhost',
                 port: TEST_PORT,
@@ -78,6 +78,18 @@ describe('Server API tests', function() {
         });
     });
 
+    it.only('Should accept arrays of lists of catagories', function(done){
+        submitRequest({lat:36.15768,
+                       lng:-86.764677,
+                       dist:100,
+                       cat:["food;cafe;restaurant","camping","movie_theater;movie_rental"],
+                       num:10}, function(chunk){
+             console.log(chunk);
+             console.log("The length of the response: ", chunk.length);
+             done();
+         });
+    });
+
     it('Should accept zip code instead of lat,lng', function(done){
         submitRequest({zip:'37203',
                        dist:1000,
@@ -89,4 +101,28 @@ describe('Server API tests', function() {
             done();
         });
     });
+
+    describe('Google Server API tests', function() {
+        
+        before(function(done) {
+            var server = new Server({requestor: 'Google',
+                                    port: TEST_PORT});
+            server.start(done);
+        });
+
+    });
+
+    it.only('Should accept arrays of lists of catagories', function(done){
+        submitRequest({lat:36.15768,
+                      lng:-86.764677,
+                      dist:100,
+                      cat:["food;cafe;restaurant","camping","movie_theater;movie_rental"],
+                      num:10}, function(chunk){
+                          console.log(chunk);
+                          console.log("The length of the response: ", chunk.length);
+                          done();
+                      });
+    });
+
+
 });
