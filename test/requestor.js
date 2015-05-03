@@ -5,7 +5,7 @@ var TestRequestor = require('../src/server/TestRequestor'),
     R = require('ramda'),
     requestor;
 
-describe.only('Test Requestor Tests', function() {
+describe('Test Requestor Tests', function() {
     before(function() {
         requestor = new TestRequestor();
     });
@@ -35,12 +35,12 @@ describe.only('Test Requestor Tests', function() {
         });
     });
 
-    it.skip('should filter by multiple categories', function(done) {
+    it('should filter by multiple categories', function(done) {
         requestor.request({types: ['spa', 'camping']}, function(err, response) {
             var results = response.results.map(getAttribute.bind(null, 'types'));
-            console.log('Result:', results);
+	    var nonspa = R.reject(R.contains('spa'), results);
             assert(!err);
-            assert(results.every(R.contains('establishment')));
+            assert(nonspa.every(R.contains('camping')));
             assert(results.length > 0);
             done();
         });

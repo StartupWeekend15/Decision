@@ -67,7 +67,7 @@ describe('Client tests', function() {
                       });
         });
 
-        it('should create a formatted request', function(done) {
+        it.skip('should create a formatted request', function(done) {
             client._request = function(endpoint, params, callback) {
                 assert(endpoint === '/places');
                 done();
