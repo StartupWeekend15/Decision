@@ -123,7 +123,7 @@ function(Client, Utils, shake, _, noMoreTemplate, resultTemplate) {
       };
       var result_loc = {
         'latitude' : option.location.lat,
-        'longitude' : option.location.long
+        'longitude' : option.location.lng
       };
       var distance = Math.round(geolib.getDistance(user_loc, result_loc)/1609.34 * 10) / 10;
       

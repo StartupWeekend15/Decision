@@ -139,25 +139,27 @@ Server.prototype.splitPlaces = function(results,cats,num){
 };
 
 Server.prototype.getPlacesFromCache = function(params, callback) {
-    //var loc = params.location.join(','),
-    //    types = params.types.join(','),
-    //    radius = params.radius;
+    var loc = params.location.join(','),
+        types = params.types,
+        //types = params.types.join(','),
+        radius = params.radius;
 
-    //initIfNeeded(this._cache, loc);
-    //initIfNeeded(this._cache[loc], types);
-    //if (this._cache[loc][types][radius]) {
-    //    callback(this._cache[loc][types][radius].slice());
-    //} else {
-    //    callback(null);
-    //}
-    callback(null);
+    initIfNeeded(this._cache, loc);
+    initIfNeeded(this._cache[loc], types);
+    if (this._cache[loc][types][radius]) {
+        callback(this._cache[loc][types][radius].slice());
+    } else {
+        callback(null);
+    }
 };
 
 Server.prototype.cachePlaces = function(params, value) {
     var loc = params.location,
-        types = params.types.join(','),
+        types = params.types,
         radius = params.radius;
 
+    initIfNeeded(this._cache, loc);
+    initIfNeeded(this._cache[loc], types);
     this._cache[loc][types][radius] = value.slice();
 };
 

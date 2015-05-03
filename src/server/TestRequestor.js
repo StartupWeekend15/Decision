@@ -10,7 +10,8 @@ var TestRequestor = function() {
 TestRequestor.prototype.request = function(params, callback) {
     console.log('params are', params);
     // Filter by the categories
-    var categoryFilter = this._hasCategory.bind(this, params.types),
+    var types = params.types.split('|'),
+    categoryFilter = this._hasCategory.bind(this, types),
         results = options.filter(categoryFilter);
 
     return callback(null, {results: results});
