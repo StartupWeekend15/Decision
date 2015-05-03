@@ -13,29 +13,12 @@
 }
 
 .logo {
+  width: 100%;
   display: block;
   margin: 0 auto;
   padding-bottom: 30px;
   cursor: pointer;
   cursor: hand;
-}
-
-.genre.btn {
-  padding-left: 5%;
-  padding-right: 5%;
-  -webkit-transition: all 1s !important;
-  -moz-transition: all 1s !important;
-  -o-transition: all 1s !important;
-  transition: all 1s !important;
-}
-
-.genre-icon {
-  font-size: 5em;
-  padding: 15% 0;
-}
-
-.genre-text {
-  font-size: 1em;
 }
 
 .result__map-icon {
