@@ -16,7 +16,7 @@ describe('Test Requestor Tests', function() {
     };
 
     it('should filter by single category', function(done) {
-        requestor.request({types: ['cafe']}, function(err, response) {
+        requestor.request({types: 'cafe'}, function(err, response) {
             var results = response.results.map(getAttribute.bind(null, 'types'));
             assert(!err);
             assert(results.every(R.contains('cafe')));
@@ -26,7 +26,7 @@ describe('Test Requestor Tests', function() {
     });
 
     it('should filter by establishment category', function(done) {
-        requestor.request({types: ['establishment']}, function(err, response) {
+        requestor.request({types: 'establishment'}, function(err, response) {
             var results = response.results.map(getAttribute.bind(null, 'types'));
             assert(!err);
             assert(results.every(R.contains('establishment')));
@@ -36,7 +36,7 @@ describe('Test Requestor Tests', function() {
     });
 
     it('should filter by multiple categories', function(done) {
-        requestor.request({types: ['spa', 'camping']}, function(err, response) {
+        requestor.request({types: 'spa|camping'}, function(err, response) {
             var results = response.results.map(getAttribute.bind(null, 'types'));
 	    var nonspa = R.reject(R.contains('spa'), results);
             assert(!err);
@@ -47,7 +47,7 @@ describe('Test Requestor Tests', function() {
     });
 
     it('should return nothing', function(done) {
-        requestor.request({types: [';asjdf;lkasjdflk']}, function(err, response) {
+        requestor.request({types: ';asjdf;lkasjdflk'}, function(err, response) {
             var results = response.results.map(getAttribute.bind(null, 'types'));
             assert(!err);
             assert(results.length === 0);
