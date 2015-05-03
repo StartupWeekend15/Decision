@@ -6,6 +6,7 @@ var Server = require('./Server'),
 
 dotenv.load();
 
+console.log('port is', process.env.PORT);
 opts = {
     requestor: process.env.NODE_ENV === 'development'? 
                'Test' :
