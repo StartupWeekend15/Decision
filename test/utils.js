@@ -43,5 +43,14 @@ describe('Server utility function tests', function() {
         done();
     });
 
+    describe('gps2zip', function() {
+    });
+    it.only('Should change lat long to zip', function(done){
+        var lat = 36.15768,
+            lng = -86.764677;
+        var zip = Utils.latlng2zip(lat,lng);
+        console.log("The converted zip is: ", zip.zip_code);
+        done();
+    });
 });
 
