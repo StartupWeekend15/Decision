@@ -94,17 +94,18 @@ define(['Utils', 'lodash'], function(Utils, _) {
     Client.prototype._requestOptions = function(ids, num, callback) {
         var distance = (this.distance/0.6)*1000, // Convert to meters
             types,
-            params = 'lat='+this.lat+'&lng='+this.lng+
-                '&dist='+distance+types+'&num='+num;
+            params;
 
         // Prep the types
         types = ids.reduce(function(prev, curr) {
-            return prev+'&cat[]='+this.categoryMap[curr];
+            return prev+'&cat[]='+this.categoryMap[curr].join(';');
         }.bind(this), '');
 
         types = types.replace(/ /g, '%20');
         console.log('types is', types);
-        this._request('/places', types, callback);
+        params = 'lat='+this.lat+'&lng='+this.lng+
+            '&dist='+distance+types+'&num='+num;
+        this._request('/places', params, callback);
     };
 
     /**
