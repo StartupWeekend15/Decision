@@ -162,7 +162,6 @@ Server.prototype.convertResult = function(result) {
     var json_result = R.pick(fields, result);
     json_result['location'] = json_result['geometry']['location'];
     delete json_result.geometry;
-    console.log(json_result);
     return json_result;
 };
 

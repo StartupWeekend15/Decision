@@ -49,6 +49,8 @@ function(Client, Utils, shake, _, noMoreTemplate, resultTemplate) {
 
   var categories = getCategoryMap(),
       client = new Client(categories);
+    console.log('categories:');
+    console.log(categories);
 
   // get location by ip (faster than browser)
   geolocator.locateByIP(function(location) {
@@ -97,12 +99,20 @@ function(Client, Utils, shake, _, noMoreTemplate, resultTemplate) {
       }
 
       var addressQuery = option.vicinity.split(' ').join('+');
+        console.log('option');
+        console.log(option);
+      var price_string = '';
+      for (var i=0; i<option.price_level; i++) {
+          price_string += '$';
+      }
 
       var $rt = $(resultTemplate);
       $rt.find('.result__name').html(option.name);
-      $rt.find('.result__hours').html('9:00 AM - 5:00 PM');
-      $rt.find('.result__phone').html('(555) 555-5555');
+      $rt.find('.result__phone').html(option.formatted_phone_number);
       $rt.find('.result__photo').html('<img src="' + option.icon + '">');
+      $rt.find('.result__price').html(price_string);
+      $rt.find('.result__ratings').html(option.rating);
+      $rt.find('.result__website').html('<a href="' + option.url + '" target="_blank">' + option.url + '</a>');
       $rt.find('.result__vicinity').html('<a href="http://maps.google.com/?q=' + addressQuery + '" target="_blank">'+option.vicinity+'</a>');
 
       $('.content').html($rt);
@@ -114,6 +124,7 @@ function(Client, Utils, shake, _, noMoreTemplate, resultTemplate) {
       currentId = id;
       client.getOption(id, function(result) {
           displayOption(id, result);
+          console.log(id);
       });
   };
 
