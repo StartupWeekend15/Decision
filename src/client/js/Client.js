@@ -1,4 +1,4 @@
-/*globals prompt,define*/
+/*globals escape,prompt,define*/
 'use strict';
 
 /*
@@ -11,10 +11,11 @@
  *
  *      + Request the category options
  */
-define(['Utils'], function(Utils) {
+define(['Utils', 'lodash'], function(Utils, _) {
 
     var Client = function(categories) {
         this.categoryMap = categories;
+        this.inverseCategoryMap = _.invert(this.categoryMap);
 
         this.lat = 0;
         this.lng = 0;
@@ -72,9 +73,8 @@ define(['Utils'], function(Utils) {
             }
         };
 
-        for (var id in this.categoryMap) {
-            this._requestOptions(id, callback);
-        }
+        // Request a single option
+        this._requestOptions(Object.keys(this.categoryMap), 1, callback);
     };
 
     Client.prototype.setDistance = function (dist) {
@@ -84,26 +84,66 @@ define(['Utils'], function(Utils) {
     };
 
     /**
-     * Request the local options from the server for the given category
+     * Create the request from the client info.
      *
-     * @param {String} category
+     * @param {ButtonId} ids
+     * @param {Number} num
+     * @param {Function} callback
      * @return {undefined}
      */
-    Client.prototype._requestOptions = function(id, callback) {
-        var req = new XMLHttpRequest(),
-            distance = (this.distance/0.6)*1000, // Convert to meters
-            types = this.categoryMap[id].reduce(function(p,c) {
-                return p+'&cat[]='+c;
-            }, ''),
-            params = 'lat='+this.lat+'&lng='+this.lng+
-                '&dist='+distance+types+'&num='+this.entropy;
+    Client.prototype._requestOptions = function(ids, num, callback) {
+        var distance = (this.distance/0.6)*1000, // Convert to meters
+            types,
+            params;
 
-        req.onload = function(e) {
-            this.options[id] = JSON.parse(req.responseText);
-            callback();
-        }.bind(this);
-        req.open('get', '/places?'+params, true);
+        // Prep the types
+        types = ids.reduce(function(prev, curr) {
+            return prev+'&cat[]='+this.categoryMap[curr].join(';');
+        }.bind(this), '');
+
+        types = types.replace(/ /g, '%20');
+        console.log('types is', types);
+        params = 'lat='+this.lat+'&lng='+this.lng+
+            '&dist='+distance+types+'&num='+num;
+        this._request('/places', params, callback);
+    };
+
+    /**
+     * Make an HTTP request to the server
+     *
+     * @param {String} endpoint
+     * @param {String} params
+     * @param {Function} callback
+     * @return {undefined}
+     */
+    Client.prototype._request = function(endpoint, params, callback) {
+        var req = new XMLHttpRequest();
+        req.onload = this._handleResponse.bind(this, req, callback);
+        req.open('get', endpoint+'?'+params, true);
         req.send();
+    };
+
+    /**
+     * Record the options returned from the server
+     *
+     * @param {XMLHttpRequest} request
+     * @param {Function} callback
+     * @return {undefined}
+     */
+    Client.prototype._handleResponse = function(request, callback) {
+        var id,
+            res = JSON.parse(request.responseText);
+
+        console.log('inverseCatMap:', this.inverseCategoryMap);
+        _.forIn(res, function(value, key) {
+            // Record the new options
+            id = this.inverseCategoryMap[key];
+            this.options[id] = value;
+        }.bind(this));
+
+        if (callback) {
+            callback();
+        }
     };
 
     /**
@@ -115,8 +155,13 @@ define(['Utils'], function(Utils) {
     Client.prototype.getOption = function(id, cb) {
         var fn = function() {
             console.log('Getting option for', id);
+            if (!this.remainingOptions[id]) {  // First click
+                // Request more options for this option id
+                this._requestOptions([id], 10, function() {
+                    this.remainingOptions[id] = this.options[id].slice();
+                }.bind(this));
+            }
             this.remainingOptions[id] = this.options[id].slice();
-            console.log('there', this.remainingOptions[id]);
             return cb(this._getOption(id));
         }.bind(this);
         if (!this.lat) {
