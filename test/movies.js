@@ -8,15 +8,18 @@ var MoviesRequestor = require('../src/server/MoviesRequestor'),
 
 describe('Movies requestor tests', function() {
     'use strict';
-    var requestor = new MoviesRequestor(37211);
-    requestor.getRssFile = function (done, parser) {
-        fs.createReadStream(__dirname+'/assets/moviesnearme_37211.rss')
-        .on('error', done)
-        .pipe(parser)
-    }
+    var requestor;
+    before(function() {
+        requestor = new MoviesRequestor(37211);
+        requestor.getRssFile = function (done, parser) {
+            fs.createReadStream(__dirname+'/assets/moviesnearme_37211.rss')
+            .on('error', done)
+            .pipe(parser);
+        };
+    });
 
     it('Gets rss url given zip code', function(done){
-        assert.equal(requestor.getUrl(),'http://www.fandango.com/rss/moviesnearme_37211.rss');
+        assert.equal(requestor._getUrl(),'http://www.fandango.com/rss/moviesnearme_37211.rss');
         done();
     });
 
@@ -25,7 +28,7 @@ describe('Movies requestor tests', function() {
             assert.deepEqual(movies, movieOptions);
             done();
         });
-    })
+    });
 
 });
 
