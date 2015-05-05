@@ -1,6 +1,6 @@
 'use strict';
 
-var options = require('../../test/assets/options'),
+var options = require('../../../test/assets/options'),
     _ = require('lodash');
 
 var TestRequestor = function() {

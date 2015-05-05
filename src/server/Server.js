@@ -10,9 +10,9 @@
 
 var express = require("express"),
     bodyParser = require('body-parser'),
-    GoogleRequestor = require('./GoogleRequestor'),
-    MoviesRequestor = require('./MoviesRequestor'),
-    TestRequestor = require('./TestRequestor'),
+    GoogleRequestor = require('./requestors/GoogleRequestor'),
+    MoviesRequestor = require('./requestors/MoviesRequestor'),
+    TestRequestor = require('./requestors/TestRequestor'),
     R = require('ramda'),
     path = require('path'),
     shuffle = require('lodash.shuffle'),
@@ -84,10 +84,9 @@ Server.prototype.initializeApp = function() {
         console.log('Requested types:', parameters.types);
         var requestingMovies = R.contains('movies')(parameters.types);
         if (requestingMovies) {
-            console.log('requesting movies');
+            //console.log('raw movies', movies);
             var zip = Utils.latlng2zip.apply(null, parameters.location);
             this.moviesRequestor._zip_code = zip.zip_code;
-            console.log('zip code is:', zip);
             this.moviesRequestor.fetchMovies(function(err, info) {
                 // Clean the movie info
                 var movies = info.map(Utils.getAttribute.bind(null, 'items'));
@@ -100,7 +99,7 @@ Server.prototype.initializeApp = function() {
                     num = Math.min(results.length,num);
                     results = shuffle(results);
                     results = this.splitPlaces(results,cats,num);
-                    //results = [];
+                    results.movies = shuffle(movies).splice(0, Math.min(movies.length, num));
                     res.send(JSON.stringify(results));  
                 }.bind(this));
 
@@ -141,7 +140,7 @@ Server.prototype.splitCats = function(cats){
 Server.prototype.splitPlaces = function(results,cats,num){
     var res = {};
 
-    for(var i=0; i<cats.length;++i){
+    for(var i=0; i<cats.length; ++i){
         var tmp = [];
         for(var j=0; j<results.length; ++j){
             var temp = cats[i].split(',');
