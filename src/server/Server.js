@@ -10,12 +10,12 @@
 
 var express = require("express"),
     bodyParser = require('body-parser'),
-    GoogleRequestor = require('./requestors/GoogleRequestor'),
-    MoviesRequestor = require('./requestors/MoviesRequestor'),
-    TestRequestor = require('./requestors/TestRequestor'),
+
+    Requestors = require('./requestors'),
     R = require('ramda'),
     path = require('path'),
-    shuffle = require('lodash.shuffle'),
+    _ = require('lodash'),
+    async = require('async'),
     Utils = require('./Utils'),
     array = require('array-extended');
 
@@ -23,9 +23,9 @@ var Server = function(opts) {
     this._cache = {};
 
     // Set up the requestor
-    this.requestor = null;
-    this.initializeRequestor(opts);
-    this.moviesRequestor = new MoviesRequestor();  // Set the zip code
+    this._requestors = null;
+
+    this.initializeRequestors(opts);
 
     this._port = opts.port;
     this._app = express();
@@ -33,17 +33,15 @@ var Server = function(opts) {
 };
 
 /**
- * Configure a requestor for the server.
+ * Initialize the requestors used by the server.
  *
  * @param {Object} opts
  * @return {undefined}
  */
-Server.prototype.initializeRequestor = function(opts) {
-    if (opts.requestor === 'Test') {
-        this.requestor = new TestRequestor();
-    } else {
-        this.requestor = new GoogleRequestor(opts);
-    }
+Server.prototype.initializeRequestors = function(opts) {
+    this._requestors = Requestors.map(function(Req) {
+        return new Req(opts);
+    });
 };
 
 Server.prototype.initializeApp = function() {
@@ -73,49 +71,46 @@ Server.prototype.initializeApp = function() {
     this._app.get('/places', function (req, res) {
         var num = req.query.num;
         var cats = this.splitCats(req.query.cat.toString());
-        console.log("The catagories received: ",cats);
+        console.log("<<<< Categories received: ",cats);
         var parameters = {
             location:[req.query.lat, req.query.lng],
+            // Group all requested categories
             types:req.query.cat.toString().replace(/;/g,',').split(','),
             radius:req.query.dist
         };    
 
-        // Check for movies requested
-        console.log('Requested types:', parameters.types);
-        var requestingMovies = R.contains('movies')(parameters.types);
-        if (requestingMovies) {
-            //console.log('raw movies', movies);
-            var zip = Utils.latlng2zip.apply(null, parameters.location);
-            this.moviesRequestor._zip_code = zip.zip_code;
-            this.moviesRequestor.fetchMovies(function(err, info) {
-                // Clean the movie info
-                var movies = info.map(Utils.getAttribute.bind(null, 'items'));
-                movies = R.flatten(movies);
+        // Send the messages to every requestor that needs it
+        async.map(this._requestors, this._request.bind(this,parameters), function(err, results) {
+            if (err) {
+                return console.error('Could not get requests:', err);
+            }
+            // Merge all results and remove "null" values
+            results = R.reject(R.isNil, R.flatten(results));
 
-                console.log('Received movies:', movies);
+            // Group by requested categories
+            var response = {};
+            cats.forEach(function(c) {
+                response[c] = results.filter(Utils.hasCategory.bind(null, c.split(',')));
+            }, this);
 
-                this.getPlaces(parameters, function(results) {
+            console.log('<<< Final Response is', response.movies);
 
-                    num = Math.min(results.length,num);
-                    results = shuffle(results);
-                    results = this.splitPlaces(results,cats,num);
-                    results.movies = shuffle(movies).splice(0, Math.min(movies.length, num));
-                    res.send(JSON.stringify(results));  
-                }.bind(this));
-
-            }.bind(this));
-        } else {
-            this.getPlaces(parameters, function(results) {
-                num = Math.min(results.length,num);
-                results = shuffle(results);
-                results = results.splice(0,num);
-                res.send(JSON.stringify(results));  
-            });
-
-        }
+            return res.send(JSON.stringify(response));  
+        });
 
     }.bind(this));
 
+};
+
+Server.prototype._request = function(req, requestor, callback) {
+    if (_.intersection(req.types, requestor.getCategories()).length) {
+        requestor.request(req, function(err, results) {
+            console.log('<<< Results from '+requestor.getName()+':', results);
+            return callback(err, results);
+        });
+    } else {
+        return callback(null, null);
+    }
 };
 
 // Caching
@@ -125,14 +120,11 @@ var initIfNeeded = function(obj, key) {
     }
 };
 
-
 Server.prototype.splitCats = function(cats){
     var res = cats.split(',');
-    //console.log("The split categories: ",res);
     var cat =  res.map(function(item){
         return item.replace(/;/g,',');
     });
-    //console.log("Categories: ",cat); 
     return cat; 
 };
 
@@ -152,13 +144,9 @@ Server.prototype.splitPlaces = function(results,cats,num){
         }
         tmp = tmp.splice(0,num);
 
-        console.log('CATS:', cats[i]);
-        console.log("Array size: ",tmp.length);
         // Add it to a map
         res[cats[i]] = tmp;
     }  
-
-    console.log('RESPONSE:', res);
 
     // results = results.splice(0,num);
     return res;
@@ -178,73 +166,22 @@ Server.prototype.getPlacesFromCache = function(params, callback) {
     }
 };
 
-Server.prototype.cachePlaces = function(params, value) {
-    var loc = params.location,
-        types = params.types.join(','),
-        radius = params.radius;
-
-    this._cache[loc][types][radius] = value.slice();
-};
-
 Server.prototype.getPlaces = function(params, callback) {
     this.getPlacesFromCache(params, function(cachedValue) {
         if (cachedValue) {
             callback(cachedValue.slice());
         } else {
-          this.requestor.request(params, function (error, response) {
+            // FIXME: Add support for getting different results
+          this.requestor.request(params, function (error, results) {
               if (error) {
                   throw error;
               }
 
-              var results = response.results.map(this.convertResult);
-              results = Utils.filterClosed(results);
-              
               this.cachePlaces(params, results);
               callback(results);
           }.bind(this));
         }
     }.bind(this));
-};
-
-/**
- * Convert a single request
- *
- * vicinity = simplified address (pass directly to google maps on client side)
- * types = can take one of the following values:
- *   accounting airport amusement_park aquarium art_gallery atm bakery bank bar beauty_salon bicycle_store book_store bowling_alley bus_station
- *   cafe campground car_dealer car_rental car_repair car_wash casino cemetery church city_hall clothing_store convenience_store courthouse dentist
- *   department_store doctor electrician electronics_store embassy establishment finance fire_station florist food funeral_home furniture_store gas_station
- *   general_contractor grocery_or_supermarket gym hair_care hardware_store health hindu_temple home_goods_store hospital insurance_agency jewelry_store
- *   laundry lawyer library liquor_store local_government_office locksmith lodging meal_delivery meal_takeaway mosque movie_rental movie_theater moving_company
- *   museum night_club painter park parking pet_store pharmacy physiotherapist place_of_worship plumber police post_office real_estate_agency restaurant
- *   roofing_contractor rv_park school shoe_store shopping_mall spa stadium storage store subway_station synagogue taxi_stand train_station travel_agency
- *   university veterinary_care zoo
- * location = contains the geocoded latitude,longitude value for this place.
- * formatted_phone_number = phone number locally formatted
- * rating = place rating
- * price_level = number 0 to 4 representing price
- * website = lists the authoritative website for this place, such as a business' homepage
- *
- * @param result
- * @return {undefined}
- */
-Server.prototype.convertResult = function(result) {
-    var fields = ['place_id', 'photos', 'name', 'icon', 'vicinity', 'types', 'geometry', 'formatted_phone_number', 'rating', 'price_level', 'website'];
-    var json_result = R.pick(fields, result);
-    json_result.location = json_result.geometry.location;
-    var type = json_result.types[0];
-    try {
-        type = path.basename(json_result.icon.split('-')[0]);
-        var words = type.split('_');
-        type = '';
-        for (var i=0; i<words.length; i++) {
-            words[i] = words[i].charAt(0).toUpperCase() + words[i].substr(1) + ' ';
-        }
-        type = words.join(' ');
-    } catch(error) { console.log("parsing icon didn't work", json_result.icon); }
-    json_result.type = type;
-    delete json_result.geometry;
-    return json_result;
 };
 
 Server.prototype.start = function(callback) {

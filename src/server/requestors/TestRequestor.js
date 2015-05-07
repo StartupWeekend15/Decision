@@ -1,19 +1,8 @@
 'use strict';
 
-var options = require('../../../test/assets/options'),
-    _ = require('lodash');
 
 var TestRequestor = function() {
     console.log('Using Testing Requestor');
-};
-
-TestRequestor.prototype.request = function(params, callback) {
-    console.log('params are', params);
-    // Filter by the categories
-    var categoryFilter = this._hasCategory.bind(this, params.types),
-        results = options.filter(categoryFilter);
-
-    return callback(null, {results: results});
 };
 
 /**

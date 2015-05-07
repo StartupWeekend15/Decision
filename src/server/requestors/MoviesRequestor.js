@@ -1,8 +1,12 @@
 'use strict';
 var FeedParser = require('feedparser'),
     DOMParser = require('xmldom').DOMParser, // jshint ignore:line
-    request = require('request');
+    request = require('request'),
+    R = require('ramda'),
+    movies = require('../../../test/assets/movieOptions'),
+    Utils = require('../Utils');
 
+var CATEGORIES = ['movies'];
 /**
  * MoviesRequestor
  *
@@ -13,6 +17,41 @@ var FeedParser = require('feedparser'),
 var MoviesRequestor = function(zip_code) {
     this._base_url = "http://www.fandango.com/rss/moviesnearme_";
     this._zip_code = zip_code;
+
+    // If offline mode, get the movie options from /test/assets/movieOptoins
+    if (process.env.NODE_ENV === 'offline') {
+        this.request = this._offlineRequest.bind(this);
+    }
+};
+
+MoviesRequestor.prototype.getName = function() {
+    return 'MoviesRequestor';
+};
+
+/**
+ * Request the given suggestions.
+ *
+ * @param {Function} done
+ * @return {undefined}
+ */
+MoviesRequestor.prototype.request = function(req, done) {
+    this._zip_code = Utils.latlng2zip.apply(null, req.location);
+    this._fetchMovies(function(err, data) {
+        console.log('Movie request returning:', data);
+        if (err) {
+            return done(err);
+        }
+        return done(null, this._formatResponse(data));
+    }.bind(this));
+};
+
+/**
+ * Get the supported categories of this requestor.
+ *
+ * @return {undefined}
+ */
+MoviesRequestor.prototype.getCategories = function() {
+    return CATEGORIES.slice();
 };
 
 /**
@@ -69,10 +108,11 @@ MoviesRequestor.prototype._createList = function(data) {
 /**
  * Fetch the given movies from the database.
  *
+ * @private
  * @param {Function} done
  * @return {undefined}
  */
-MoviesRequestor.prototype.fetchMovies = function(done) {
+MoviesRequestor.prototype._fetchMovies = function(done) {
     var theater_list = [];
 
     var feedparser = new FeedParser();
@@ -86,6 +126,7 @@ MoviesRequestor.prototype.fetchMovies = function(done) {
     feedparser.on('readable', function() {
         var stream = this, item;
         while (item = stream.read()) {  // jshint ignore:line
+            console.log('<< MOVIE REQUESTOR\nREADING:', item);
             var theater_info = self._createList(item.description);
             theater_info.name = item.title;
             theater_list.push(theater_info);
@@ -93,6 +134,44 @@ MoviesRequestor.prototype.fetchMovies = function(done) {
     });
 
     this._getRssFile(feedparser, done);
+};
+
+/**
+ * Convert the options into standard request format.
+ *
+ * @param {Array<Theater>} data
+ * @return {undefined}
+ */
+MoviesRequestor.prototype._formatResponse = function(theaters) {
+    // Theater:
+    //    name:
+    //    location:
+    //    items: [{link, title}]
+    console.log('THEATERS:',theaters);
+    var movies = [];
+    theaters.forEach(function(t) {
+        var newMovies = t.items.map(this._createMovie.bind(this, t));
+        movies = movies.concat(newMovies);
+    }, this);
+    return movies;
+};
+
+/**
+ * Create the given movie response object.
+ *
+ * @param theater
+ * @param movie
+ * @return {undefined}
+ */
+MoviesRequestor.prototype._createMovie = function(theater, movie) {
+    movie.theater = theater.name;
+    movie.vicinity = theater.location;  // FIXME: Change vicinity to location
+    movie.types = ['movies'];
+    return movie;
+};
+
+MoviesRequestor.prototype._offlineRequest = function(req, done) {
+    return done(null, this._formatResponse(movies));
 };
 
 module.exports = MoviesRequestor;

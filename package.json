@@ -9,7 +9,7 @@
   "scripts": {
     "postinstall": "bower install",
     "start": "node src/server/app.js",
-    "start-dev": "NODE_ENV=development node node_modules/nodemon/bin/nodemon.js src/server/app.js",
+    "start-dev": "NODE_ENV=offline node node_modules/nodemon/bin/nodemon.js src/server/app.js",
     "test": "node node_modules/mocha/bin/mocha test/",
     "testmon": "node_modules/nodemon/bin/nodemon.js node_modules/mocha/bin/mocha test/"
   },
@@ -24,22 +24,22 @@
   },
   "homepage": "https://github.com/StartupWeekend15/Decision",
   "dependencies": {
+    "array-extended": "0.0.11",
+    "async": "^0.9.0",
     "body-parser": "^1.12.2",
     "bower": "^1.4.1",
     "dotenv": "^1.1.0",
     "express": "^4.12.3",
-    "feedparser": "^1.0.1",
+    "feedparser": "~1.0.1",
     "googleplaces": "^0.4.1",
+    "gps2zip": "~1.1.0",
     "jade": "^1.9.2",
     "lodash.shuffle": "~3.0.0",
     "ramda": "^0.13.0",
     "request": "^2.55.0",
     "requirejs": "^2.1.17",
     "urlencode": "^1.0.0",
-    "feedparser": "~1.0.1",
-    "xmldom": "~0.1.19",
-    "gps2zip": "~1.1.0",
-    "array-extended": "0.0.11"
+    "xmldom": "~0.1.19"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
