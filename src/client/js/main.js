@@ -117,6 +117,15 @@ function(Client, Utils, shake, _, noMoreTemplate, resultTemplate) {
             option.rating -= 0.5;
         }
       }
+      var user_loc = {
+        'latitude' : client.lat,
+        'longitude' : client.lng
+      };
+      var result_loc = {
+        'latitude' : option.location.lat,
+        'longitude' : option.location.lng
+      };
+      var distance = Math.round(geolib.getDistance(user_loc, result_loc)/1609.34 * 10) / 10;
       
       console.log('option');
       console.log(option);
@@ -126,6 +135,7 @@ function(Client, Utils, shake, _, noMoreTemplate, resultTemplate) {
       $rt.find('.result__photo').html('<img src="' + option.icon + '">');
       $rt.find('.result__type').html(option.type);
       $rt.find('.result__price').html(price_string);
+      $rt.find('.result__distance').html(distance + ' miles away');
       $rt.find('.result__ratings').html(rating_string);
       $rt.find('.result__vicinity').html('<a href="http://maps.google.com/?q=' + addressQuery + '" target="_blank">'+option.vicinity+'</a>');
 

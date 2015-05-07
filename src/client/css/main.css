@@ -25,8 +25,16 @@
   margin-right: 10px;
 }
 
+.result__distance {
+  font-size: 1.5em;
+}
+
+.result__type_and_price {
+  font-size: 1.5em;
+}
+
 .result__price {
-  color: green;
+  color: #88c45c;
 }
 
 .result__ratings img {
@@ -47,9 +55,16 @@
 
 .result__vicinity a {
   color: black;
+  font-size: 1.5em;
 }
 
 .result__retry{
+  width: 100%;
+  cursor: pointer;
+  cursor: hand;
+}
+
+.result__restart{
   width: 100%;
 }
 
@@ -65,10 +80,6 @@
 
 .result__name {
   font-size: 2em;
-}
-
-.result__location {
-  margin: 20px;
 }
 
 hr {

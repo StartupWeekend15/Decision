@@ -18,6 +18,7 @@
     "bootstrap-material-design": "~0.3.0",
     "jQuery": "~2.1.4",
     "bootstrap": "~3.3.4",
-    "geolocator": "~1.2.9"
+    "geolocator": "~1.2.9",
+    "geolib": "~2.0.9"
   }
 }
