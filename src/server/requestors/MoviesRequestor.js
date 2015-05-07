@@ -37,7 +37,6 @@ MoviesRequestor.prototype.getName = function() {
 MoviesRequestor.prototype.request = function(req, done) {
     this._zip_code = Utils.latlng2zip.apply(null, req.location);
     this._fetchMovies(function(err, data) {
-        console.log('Movie request returning:', data);
         if (err) {
             return done(err);
         }
@@ -126,7 +125,6 @@ MoviesRequestor.prototype._fetchMovies = function(done) {
     feedparser.on('readable', function() {
         var stream = this, item;
         while (item = stream.read()) {  // jshint ignore:line
-            console.log('<< MOVIE REQUESTOR\nREADING:', item);
             var theater_info = self._createList(item.description);
             theater_info.name = item.title;
             theater_list.push(theater_info);
@@ -147,7 +145,6 @@ MoviesRequestor.prototype._formatResponse = function(theaters) {
     //    name:
     //    location:
     //    items: [{link, title}]
-    console.log('THEATERS:',theaters);
     var movies = [];
     theaters.forEach(function(t) {
         var newMovies = t.items.map(this._createMovie.bind(this, t));

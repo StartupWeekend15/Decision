@@ -1,7 +1,7 @@
 /*globals before,describe,it*/
 
 // HTTP Request example
-var MoviesRequestor = require('../src/server/MoviesRequestor'),
+var MoviesRequestor = require('../src/server/requestors/MoviesRequestor'),
     fs = require('fs'),
     movieOptions = require('./assets/movieOptions'),
     assert = require('assert');
@@ -11,7 +11,7 @@ describe('Movies requestor tests', function() {
     var requestor;
     before(function() {
         requestor = new MoviesRequestor(37211);
-        requestor.getRssFile = function (done, parser) {
+        requestor._getRssFile = function (parser, done) {
             fs.createReadStream(__dirname+'/assets/moviesnearme_37211.rss')
             .on('error', done)
             .pipe(parser);
@@ -24,7 +24,7 @@ describe('Movies requestor tests', function() {
     });
 
     it('Fetches movies playing near zip code', function(done){
-        requestor.fetchMovies(function(err, movies){
+        requestor._fetchMovies(function(err, movies){
             assert.deepEqual(movies, movieOptions);
             done();
         });
