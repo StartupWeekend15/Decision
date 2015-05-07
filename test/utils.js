@@ -52,5 +52,25 @@ describe('Server utility function tests', function() {
             done();
         });
     });
+
+    describe('initializeEntry', function() {
+        it('Should create a key in the dictionary', function(){
+            var dict = {};
+            Utils.initializeEntry(dict, 'k1');
+            assert.equal(typeof dict.k1, 'object');
+        });
+
+        it('Should create the multiple entries given multiple keys', function(){
+            var dict = {};
+            Utils.initializeEntry(dict, 'k1', 'k2', 'k3');
+            assert.equal(typeof dict.k1.k2.k3, 'object');
+        });
+
+        it('Should preserve values already existing', function(){
+            var dict = {k1: {test: 1}};
+            Utils.initializeEntry(dict, 'k1', 'k2', 'k3');
+            assert.equal(dict.k1.test, 1);
+        });
+    });
 });
 

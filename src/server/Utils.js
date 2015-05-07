@@ -42,11 +42,21 @@ var hasCategory = function(categories, result) {
     return shared.length > 0;
 };
 
+var initializeEntry = function(dict, key1, key2) {
+    for (var i = 1; i < arguments.length; i++) {
+        if (!dict[arguments[i]]) {
+            dict[arguments[i]] = {};
+        }
+        dict = dict[arguments[i]];
+    }
+};
+
 
 module.exports = {
     filterClosed: filterClosed,
     getAttribute: getAttribute,
     latlng2zip: latlng2zip,
+    initializeEntry: initializeEntry,
     hasCategory: hasCategory
 };
 
