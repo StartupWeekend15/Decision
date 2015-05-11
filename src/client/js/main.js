@@ -22,11 +22,12 @@ require.config({
 define([ 'Client'
        , 'Utils'
        , 'shake'
+       , './controllers/Controller'
        , 'lodash'
        , 'text!../html/no_more.html'
        , 'text!../html/result.html'
        ],
-function(Client, Utils, shake, _, noMoreTemplate, resultTemplate) {
+function(Client, Utils, shake, Controller, _, noMoreTemplate, resultTemplate) {
 
   // Initialize shake listening
   // TODO
@@ -49,8 +50,16 @@ function(Client, Utils, shake, _, noMoreTemplate, resultTemplate) {
 
   var categories = getCategoryMap(),
       client = new Client(categories);
+
     console.log('categories:');
     console.log(categories);
+
+  // Create the controllers
+  var Contr = Controller.bind(this, client);
+  $('.genre').each(function(i, btn) {
+      new Controller(client, btn);
+  });
+
 
   // get location by ip (faster than browser)
   geolocator.locateByIP(function(location) {
@@ -71,91 +80,6 @@ function(Client, Utils, shake, _, noMoreTemplate, resultTemplate) {
     client.setLocation(coords.latitude, coords.longitude);
   }
   
-  // Hook up the click listeners
-  // Attach click listener for each of the categories' ids
-  var displayNoOption = function() {
-      var $rt = $(noMoreTemplate);
-      $('.content').html($rt);
-
-      console.log('No options found!');
-      // alert('No more new options for you. You can restart!');
-      // location.reload();
-  };
-  var displayOption = function(id, option) {
-      if (!option) {
-          return displayNoOption();
-      }
-
-      if (option === null) {
-          console.log("Shouldn't be called with null option");
-          option = option || {
-            name: "Starbucks",
-            icon: "http://maps.gstatic.com/mapfiles/place_api/icons/cafe-71.png",
-            rating: 4,
-            vicinity: "402 21st Avenue South, Nashville",
-            opening_hours: {open_now: true, weekday_text: []},
-            price_level:2
-          };
-      }
-
-      var addressQuery = option.vicinity.split(' ').join('+');
-        console.log('option');
-        console.log(option);
-      var price_string = '';
-      for (var i=0; i<option.price_level; i++) {
-        price_string += '$';
-      }
-      var rating_string = '';
-      while (option.rating >= 0.5) {
-        if (option.rating >= 1) {
-            rating_string += '<img src="star_full.png">';
-            option.rating -= 1;
-            continue;
-        }
-        if (option.rating >= 0.5) {
-            rating_string += '<img src="star_half.png">';
-            option.rating -= 0.5;
-        }
-      }
-      var user_loc = {
-        'latitude' : client.lat,
-        'longitude' : client.lng
-      };
-      var result_loc = {
-        'latitude' : option.location.lat,
-        'longitude' : option.location.lng
-      };
-      var distance = Math.round(geolib.getDistance(user_loc, result_loc)/1609.34 * 10) / 10;
-      
-      console.log('option');
-      console.log(option);
-
-      var $rt = $(resultTemplate);
-      $rt.find('.result__name').html(option.name);
-      $rt.find('.result__photo').html('<img src="' + option.icon + '">');
-      $rt.find('.result__type').html(option.type);
-      $rt.find('.result__price').html(price_string);
-      $rt.find('.result__distance').html(distance + ' miles away');
-      $rt.find('.result__ratings').html(rating_string);
-      $rt.find('.result__vicinity').html('<a href="http://maps.google.com/?q=' + addressQuery + '" target="_blank">'+option.vicinity+'</a>');
-
-      $('.content').html($rt);
-
-      console.log('Displaying option for', id,'(', option.name, ')');
-  };
-
-  var onOptionClicked = function(id) {
-      currentId = id;
-      client.getOption(id, function(result) {
-          displayOption(id, result);
-          console.log(id);
-      });
-  };
-
-  for (var id in categories) {
-      document.getElementById(id).onclick = onOptionClicked.bind(null, id);
-  }
-
   // Manipulating the UI
   $(function() {
 
@@ -166,12 +90,6 @@ function(Client, Utils, shake, _, noMoreTemplate, resultTemplate) {
     $('.content').on('click', '.result__accept', function(){
       //confirm('Awesome! Tweet now?');
       location.reload();  // FIXME Change this not to reload the whole page...
-    });
-
-    // Set event listener
-    $('.content').on('click', '.result__retry', function(){
-      var opt = client.getAnotherOption(currentId);
-      displayOption(currentId, opt);
     });
 
   });
