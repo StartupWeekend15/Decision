@@ -7,7 +7,7 @@ define({
 	proxyPort: 9000,
 
 	// A fully qualified URL to the Intern proxy
-	proxyUrl: 'http://localhost:9000',
+	proxyUrl: 'http://127.0.0.1:9000',
 
 	// Default desired capabilities for all environments. Individual capabilities can be overridden by any of the
 	// specified browser environments in the `environments` array below as well. See
