@@ -25,6 +25,7 @@ GoogleRequestor.prototype.getName = function() {
     return 'GoogleRequestor';
 };
 GoogleRequestor.prototype.request = function(params, callback) {
+    params.types = params.types.join('|');
     return this._googlePlaces.placeSearch(params, R.partialRight(this.cleanResults.bind(this), callback));
 };
 

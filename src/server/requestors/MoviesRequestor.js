@@ -35,7 +35,7 @@ MoviesRequestor.prototype.getName = function() {
  * @return {undefined}
  */
 MoviesRequestor.prototype.request = function(req, done) {
-    this._zip_code = Utils.latlng2zip.apply(null, req.location);
+    this._zip_code = Utils.latlng2zip.apply(null, req.location).zip_code;
     this._fetchMovies(function(err, data) {
         if (err) {
             return done(err);
