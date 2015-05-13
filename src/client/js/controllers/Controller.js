@@ -21,6 +21,16 @@ define([
     };
 
     /**
+     * Get the name of the given controller.
+     *
+     * @return {String} name
+     */
+    Controller.prototype.getName = function() {
+        // Override this method when creating custom controllers
+        return 'Basic';
+    };
+
+    /**
      * Display the given option on the screen.
      *
      * @private
@@ -56,18 +66,7 @@ define([
       for (var i=0; i<option.price_level; i++) {
         price_string += '$';
       }
-      var rating_string = '';
-      while (option.rating >= 0.5) {
-        if (option.rating >= 1) {
-            rating_string += '<img src="star_full.png">';
-            option.rating -= 1;
-            continue;
-        }
-        if (option.rating >= 0.5) {
-            rating_string += '<img src="star_half.png">';
-            option.rating -= 0.5;
-        }
-      }
+      var rating_string = this._createRatingText(option.rating);
       var user_loc = {
         'latitude' : this._client.lat,
         'longitude' : this._client.lng
@@ -102,6 +101,24 @@ define([
       $('.content').html($rt);
 
       console.log('No options found!');
+    };
+
+    Controller.prototype._createRatingText = function(rating, total) {
+        var result = '';
+        total = total || 5;
+
+        while (rating >= 0.5) {
+            if (rating >= 1) {
+                result += '<img src="star_full.png">';
+                rating -= 1;
+                continue;
+            }
+            if (rating >= 0.5) {
+                result += '<img src="star_half.png">';
+                rating -= 0.5;
+            }
+        }
+        return result;
     };
 
     return Controller;

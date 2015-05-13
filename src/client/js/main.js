@@ -25,12 +25,12 @@ require.config({
 define([ 'Client'
        , 'Utils'
        , 'shake'
-       , './controllers/Controller'
+       , './controllers'
        , 'lodash'
        , 'text!../html/no_more.html'
        , 'text!../html/result.html'
        ],
-function(Client, Utils, shake, Controller, _, noMoreTemplate, resultTemplate) {
+function(Client, Utils, shake, Controllers, _, noMoreTemplate, resultTemplate) {
 
   // Initialize shake listening
   // TODO
@@ -52,15 +52,19 @@ function(Client, Utils, shake, Controller, _, noMoreTemplate, resultTemplate) {
   };
 
   var categories = getCategoryMap(),
-      client = new Client(categories);
+      client = new Client(categories),
+      controllers = [];
 
     console.log('categories:');
     console.log(categories);
 
-  // Create the controllers
-  var Contr = Controller.bind(this, client);
+  // Create the controllers for the buttons
+  var def = 'Controller';
   $('.genre').each(function(i, btn) {
-      new Controller(client, btn);
+      var name = btn.getAttribute('data-view'),
+          Controller = Controllers[name] || Controllers[def];
+
+      controllers.push(new Controller(client, btn));
   });
 
 
