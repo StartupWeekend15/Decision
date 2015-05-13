@@ -6,15 +6,18 @@ $.material.init();
 
 // Set up require
 require.config({
+  baseDir: '..',
   paths: {
     shake: './lib/shake',
     dot: './lib/doT.min',
     lodash: './lib/lodash.min',
-    async: './lib/async'
+    async: './lib/async',
+
+    html: '../html/'
   },
   map: {
     '*': {
-      'text': './lib/require-text/text'
+      'text': 'lib/require-text/text'
     }
   }
 });
