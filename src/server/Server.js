@@ -96,7 +96,7 @@ Server.prototype.initializeApp = function() {
                 response[c] = results.filter(Utils.hasCategory.bind(null, c.split(',')));
             }, this);
 
-            console.log('<<< Final Response is', response.movies);
+            console.log('<<< Final Response is', response);
 
             return res.send(JSON.stringify(response));  
         });
