@@ -11,15 +11,12 @@ define([
 
     var Controller = function(client, button, container) {
         // Categories for the places
-        // FIXME
-        //this.categories = categories;
         this._id = button.getAttribute('id');
         // Add click listener
         button.onclick = this._renderOption.bind(this);
         this.container = container || $('.content');
 
         // Container to display the result in
-        this.container = container;
         this._client = client;
     };
 
@@ -81,9 +78,6 @@ define([
       };
       var distance = Math.round(geolib.getDistance(user_loc, result_loc)/1609.34 * 10) / 10;
       
-      console.log('option');
-      console.log(option);
-
       var $rt = $(resultTemplate);
       $rt.find('.result__name').html(option.name);
       $rt.find('.result__photo').html('<img src="' + option.icon + '">');
@@ -96,16 +90,6 @@ define([
       this.container.html($rt);
 
       console.log('Displaying option for', this._id,'(', option.name, ')');
-    };
-
-    /**
-     * Render a subsequent option.
-     *
-     * @return {undefined}
-     */
-    Controller.prototype.renderNext = function() {
-        // FIXME
-        // TODO
     };
 
     /**
