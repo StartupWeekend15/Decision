@@ -2,7 +2,10 @@ language: node_js
 node_js:
     - 'iojs-v2.0.1'
 install:
-- npm install
+    - npm install
+script:
+    - npm test
+    - npm run test-zombie
 deploy:
   provider: heroku
   app: headless-decider
