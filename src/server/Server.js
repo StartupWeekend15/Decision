@@ -32,6 +32,7 @@ var Server = function(opts) {
 
     this._port = opts.port;
     this._app = express();
+    this._serverInstance = null;
     this.initializeApp(opts);
 };
 
@@ -126,8 +127,12 @@ Server.prototype.splitCats = function(cats){
 
 Server.prototype.start = function(callback) {
     callback = callback || function(){};
-    this._app.listen(this._port, callback);
+    this._serverInstance = this._app.listen(this._port, callback);
     console.log('App running on port', this._port);
+};
+
+Server.prototype.stop = function(callback) {
+    this._serverInstance.close(callback);
 };
 
 module.exports = Server;
