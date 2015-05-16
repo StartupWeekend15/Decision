@@ -97,7 +97,7 @@ Server.prototype.initializeApp = function() {
                 response[c] = results.filter(Utils.hasCategory.bind(null, c.split(',')));
             }, this);
 
-            console.log('<<< Final Response is', response);
+            //console.log('<<< Final Response is', response);
 
             return res.send(JSON.stringify(response));  
         });
@@ -109,7 +109,7 @@ Server.prototype.initializeApp = function() {
 Server.prototype._request = function(req, requestor, callback) {
     if (_.intersection(req.types, requestor.getCategories()).length) {
         requestor.request(req, function(err, results) {
-            console.log('<<< Results from '+requestor.getName()+':', results);
+            console.log('<<< Received '+results.length+' results from '+requestor.getName());
             return callback(err, results);
         });
     } else {

@@ -37,7 +37,6 @@ var getAttribute = function(attr, obj){
  * @return {Boolean}
  */
 var hasCategory = function(categories, result) {
-    console.log('checking categories for', result, '(', categories, ')');
     var shared = _.intersection(categories, result.types);
     return shared.length > 0;
 };
