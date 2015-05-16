@@ -26,11 +26,9 @@ describe('Server API tests', function() {
             if (!params.zip) {
                 get_data = 'lat='+params.lat+'&lng='+params.lng;
             } else {
-                console.log('zip address: ', params.zip);
                 get_data = 'zip='+params.zip;
             }
             get_data += '&dist='+ params.dist+cat+'&num='+params.num;
-            console.log("get_data: ", get_data);
             var options = {
                 host: 'localhost',
                 port: TEST_PORT,
@@ -43,9 +41,7 @@ describe('Server API tests', function() {
 
         var req = http.request(options, function(res) {
             // response is here
-            console.log(Object.keys(res));
             res.on("data", function(chunk){
-                console.log("Body: " + chunk);
                 cb(JSON.parse(chunk));
             });
         });
@@ -60,7 +56,6 @@ describe('Server API tests', function() {
                        num:10}, function(chunk) {
 
             assert.notEqual(chunk.length, 0);
-            console.log(chunk.length);
             done();
         });
     });
@@ -73,7 +68,6 @@ describe('Server API tests', function() {
                        num:10}, function(chunk) {
 
             assert.notEqual(chunk.length, 0);
-            console.log(chunk.length);
             done();
         });
     });
@@ -84,8 +78,6 @@ describe('Server API tests', function() {
                        dist:100,
                        cat:["food;cafe;restaurant","camping","movie_theater;movie_rental"],
                        num:10}, function(chunk){
-             console.log(chunk);
-             console.log("The length of the response: ", chunk.length);
              done();
          });
     });
@@ -97,7 +89,6 @@ describe('Server API tests', function() {
                        num:10},function(chunk){
           
             assert.notEqual(chunk.length, 0);
-            console.log(chunk.length);
             done();
         });
     });
@@ -140,8 +131,6 @@ describe('Server API tests', function() {
                       dist:100,
                       cat:["food;cafe;restaurant","camping","movie_theater;movie_rental"],
                       num:10}, function(chunk){
-                          console.log(chunk);
-                          console.log("The length of the response: ", chunk.length);
                           done();
                       });
     });
