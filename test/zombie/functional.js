@@ -2,15 +2,19 @@
 /*jshint esnext:true */
 const Browser = require('zombie'),
       Server = require('../../src/server/Server'),
+      dotenv = require('dotenv'),
       port = 2489;
 
 // We're going to make requests to http://example.com/signup
 // Which will be routed to our test server localhost:2489
 Browser.localhost('example.com', port);
 
-describe('User visits signup page', function() {
+describe('Choozeroo Zombie Tests', function() {
     'use strict';
     const browser = new Browser();
+    before(function() {
+        dotenv.load();
+    });
     var server;
 
     var functionalTests = function() {
