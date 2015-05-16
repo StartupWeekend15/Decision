@@ -11,6 +11,7 @@
     "start": "node src/server/app.js",
     "start-dev": "NODE_ENV=offline node node_modules/nodemon/bin/nodemon.js src/server/app.js",
     "test": "node node_modules/mocha/bin/mocha test/",
+    "test-zombie": "node node_modules/mocha/bin/mocha test/zombie",
     "testmon": "node_modules/nodemon/bin/nodemon.js node_modules/mocha/bin/mocha test/"
   },
   "repository": {
@@ -48,6 +49,7 @@
     "lodash": "^3.8.0",
     "mocha": "^2.2.4",
     "nodemon": "^1.3.7",
-    "requirejs": "~2.1.17"
+    "requirejs": "~2.1.17",
+    "zombie": "^4.0.10"
   }
 }

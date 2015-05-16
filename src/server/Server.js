@@ -32,6 +32,7 @@ var Server = function(opts) {
 
     this._port = opts.port;
     this._app = express();
+    this._serverInstance = null;
     this.initializeApp(opts);
 };
 
@@ -96,7 +97,7 @@ Server.prototype.initializeApp = function() {
                 response[c] = results.filter(Utils.hasCategory.bind(null, c.split(',')));
             }, this);
 
-            console.log('<<< Final Response is', response.movies);
+            //console.log('<<< Final Response is', response);
 
             return res.send(JSON.stringify(response));  
         });
@@ -108,7 +109,7 @@ Server.prototype.initializeApp = function() {
 Server.prototype._request = function(req, requestor, callback) {
     if (_.intersection(req.types, requestor.getCategories()).length) {
         requestor.request(req, function(err, results) {
-            console.log('<<< Results from '+requestor.getName()+':', results);
+            console.log('<<< Received '+results.length+' results from '+requestor.getName());
             return callback(err, results);
         });
     } else {
@@ -126,8 +127,12 @@ Server.prototype.splitCats = function(cats){
 
 Server.prototype.start = function(callback) {
     callback = callback || function(){};
-    this._app.listen(this._port, callback);
+    this._serverInstance = this._app.listen(this._port, callback);
     console.log('App running on port', this._port);
+};
+
+Server.prototype.stop = function(callback) {
+    this._serverInstance.close(callback);
 };
 
 module.exports = Server;

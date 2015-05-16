@@ -88,6 +88,9 @@ define([
 
       this.container.html($rt);
 
+      // Add click listener
+      document.getElementById('nextBtn').onclick = this._renderOption.bind(this);
+
       console.log('Displaying option for', this._id,'(', option.name, ')');
     };
 

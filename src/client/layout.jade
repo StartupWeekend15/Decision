@@ -18,11 +18,11 @@ html
     script(src="/bower_components/geolib/dist/geolib.min.js")
     script(src="/js/GoogleAnalytics.js")
     script(src="/bower_components/geolocator/src/geolocator.min.js")
-    script(data-main='/js/main.js', src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.17/require.min.js")
+    script(data-main='/js/main.js', src="/js/lib/require.min.js")
   body
     .container
       .row
         .col-sm-12
-          img.logo(src="logo.png")
+          img#logo.logo(src="logo.png")
       .content
         block content
