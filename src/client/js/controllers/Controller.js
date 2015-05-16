@@ -13,7 +13,7 @@ define([
         // Categories for the places
         this._id = button.getAttribute('id');
         // Add click listener
-        button.onclick = this._renderOption.bind(this);
+        button.onclick = this._renderFirst.bind(this);
         this.container = container || $('.content');
 
         // Container to display the result in
@@ -31,25 +31,27 @@ define([
     };
 
     /**
+     * Render the first option.
+     *
+     * @return {undefined}
+     */
+    Controller.prototype._renderFirst = function() {
+        this._client.getOption(this._id, this._renderOption.bind(this));
+    };
+
+    /**
      * Display the given option on the screen.
      *
      * @private
+     * @param {Option} option
      * @return {undefined}
      */
-    Controller.prototype._renderOption = function() {
-        this._client.getOption(this._id, function(option) {
-            if (!option) {
-                this.renderNone();
-            } else {  // Render the option
-                this.renderOption(option);
-
-                // Set event listener
-                this.container.on('click', '.result__retry', function(){
-                    var opt = this._client.getAnotherOption(this._id);
-                    this._renderOption(this._id, opt);
-                }.bind(this));
-            }
-        }.bind(this));
+    Controller.prototype._renderOption = function(option) {
+        if (!option) {
+            this.renderNone();
+        } else {  // Render the option
+            this.renderOption(option);
+        }
     };
 
     /**
@@ -89,8 +91,7 @@ define([
       this.container.html($rt);
 
       // Add click listener
-      document.getElementById('nextBtn').onclick = this._renderOption.bind(this);
-
+      document.getElementById('nextBtn').onclick = this.renderNext.bind(this);
       console.log('Displaying option for', this._id,'(', option.name, ')');
     };
 
@@ -104,6 +105,16 @@ define([
       $('.content').html($rt);
 
       console.log('No options found!');
+    };
+
+    /**
+     * Render the next option. This will not display duplicates.
+     *
+     * @return {undefined}
+     */
+    Controller.prototype.renderNext = function() {
+        var opt = this._client.getAnotherOption(this._id);
+        this._renderOption(opt);
     };
 
     Controller.prototype._createRatingText = function(rating, total) {

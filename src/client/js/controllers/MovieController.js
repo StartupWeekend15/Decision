@@ -22,7 +22,7 @@ define(['controllers/Controller',
         // Show the basic movie info
         this.container.html(movieTemplate(option));
         // Add click listener
-        document.getElementById('nextBtn').onclick = this._renderOption.bind(this);
+        document.getElementById('nextBtn').onclick = this.renderNext.bind(this);
         this._updateView(option); // Using OMDB API
     };
 
